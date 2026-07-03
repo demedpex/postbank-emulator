@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>우체국 스마트뱅킹 체험하기</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background: #f5f5f5;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* ===== 스마트폰 프레임 ===== */
+.phone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: calc(100vh - 40px);
+  max-height: 820px;
+  background: #000;
+  border-radius: 40px;
+  box-shadow: 0 10px 60px rgba(0,0,0,0.3);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 스마트폰 노치 */
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 30px;
+  background: #000;
+  border-radius: 0 0 20px 20px;
+  z-index: 10;
+}
+
+/* ===== 앱 화면 영역 ===== */
+.app-screen {
+  flex: 1;
+  background: #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ===== 상단 네비게이션 바 ===== */
+.top-nav {
+  background: #C8102E;
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 5;
+}
+
+.top-nav .nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-nav .back-btn {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.top-nav .title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.top-nav .nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+.top-nav .icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* ===== 하단 네비게이션 바 ===== */
+.bottom-nav {
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 12px 0 8px;
+  display: flex;
+  justify-content: space-around;
+  flex-shrink: 0;
+  z-index: 5;
+}
+
+.bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.bottom-nav .nav-icon {
+  width: 28px;
+  height: 28px;
+  color: #999;
+}
+
+.bottom-nav .nav-label {
+  font-size: 11px;
+  color: #999;
+}
+
+.bottom-nav .nav-item.active .nav-icon,
+.bottom-nav .nav-item.active .nav-label {
+  color: #C8102E;
+}
+
+/* ===== 컨텐츠 영역 ===== */
+.content-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+
+.svg-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.svg-container svg,
+.svg-container img {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  display: block;
+}
+
+/* 1~5단계: 상단 정렬 */
+.svg-container.align-top svg,
+.svg-container.align-top img {
+  object-fit: cover;
+  object-position: top center;
+  height: 100%;
+}
+
+/* 6~13단계: 하단 정렬 */
+.svg-container.align-bottom {
+  align-items: flex-end;
+}
+
+.svg-container.align-bottom svg,
+.svg-container.align-bottom img {
+  object-fit: cover;
+  object-position: bottom center;
+  height: 100%;
+}
+
+/* ===== 클릭 가능 영역 (핫스팟) ===== */
+.clickable-area {
+  position: absolute;
+  cursor: pointer;
+  z-index: 3;
+  transition: background-color 0.2s;
+}
+
+.clickable-area:hover {
+  background-color: rgba(200, 16, 46, 0.1);
+}
+
+.clickable-area:active {
+  background-color: rgba(200, 16, 46, 0.2);
+}
+
+/* 디버그 모드 */
+.clickable-area.debug {
+  border: 2px solid #C8102E;
+  background-color: rgba(200, 16, 46, 0.15);
+}
+
+.clickable-area.debug::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: #C8102E;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ===== 안내 메시지 ===== */
+.guide-message {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  z-index: 10;
+  border-radius: 0 0 30px 30px;
+}
+
+/* ===== 진행 표시 ===== */
+.progress-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(200, 16, 46, 0.9);
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 20;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  .phone-frame {
+    max-width: 100%;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .phone-notch {
+    display: none;
+  }
+
+  .app-screen {
+    border-radius: 0;
+  }
+
+  .guide-message {
+    border-radius: 0;
+  }
+}
+
+/* ===== 로딩 애니메이션 ===== */
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #C8102E;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== 디버그 모드 토글 버튼 ===== */
+.debug-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #C8102E;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: none;
+}
+
+.debug-toggle.active {
+  background: #27ae60;
+}
+
+/* 데스크톱에서만 디버그 버튼 표시 */
+@media (min-width: 768px) {
+  .debug-toggle {
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+
+  <div class="app-screen">
+    <!-- 진행 표시 -->
+    <div class="progress-indicator" id="progressIndicator">1 / 13</div>
+
+    <!-- 상단 네비게이션 바 (1~5단계에서 표시) -->
+    <div class="top-nav" id="topNav">
+      <div class="nav-left">
+        <svg class="back-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        <span class="title">이체하기</span>
+      </div>
+      <div class="nav-right">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="1"/>
+          <circle cx="19" cy="12" r="1"/>
+          <circle cx="5" cy="12" r="1"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 컨텐츠 영역 -->
+    <div class="content-area" id="contentArea">
+      <div class="svg-container align-top" id="svgContainer">
+        <!-- SVG 이미지가 여기에 로드됩니다 -->
+      </div>
+
+      <!-- 클릭 가능 영역들이 동적으로 추가됩니다 -->
+    </div>
+
+    <!-- 하단 네비게이션 바 (6~13단계에서 표시) -->
+    <div class="bottom-nav" id="bottomNav" style="display: none;">
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span class="nav-label">홈</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+        <span class="nav-label">메뉴</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <span class="nav-label">MY</span>
+      </div>
+    </div>
+
+    <!-- 안내 메시지 -->
+    <div class="guide-message" id="guideMessage">
+      따라하기 체험화면으로 실제 이체가 아니에요
+    </div>
+  </div>
+</div>
+
+<!-- 디버그 모드 토글 버튼 -->
+<button class="debug-toggle" id="debugToggle">디버그 모드 OFF</button>
+
+<script id="stepsData" type="application/json">
+{
+  "steps": [
+    {
+      "step": 1,
+      "title": "이체 시작",
+      "instruction": "이체하기 버튼을 눌러주세요",
+      "showTopNav": true,
+      "showBottomNav": false,
+      "clickAreas": [
+        {
+          "label": "이체하기",
+          "left": 10,
+          "top": 50,
+          "width": 80,
+          "height": 10
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "title": "받는 계좌 입력",
+      "instruction": "받는 분의 계좌번호를 입력해주세요",
+      "showTopNav": true,
+      "showBottomNav": false,
+      "clickAreas": [
+        {
+          "label": "계좌번호 입력",
+          "left": 10,
+          "top": 30,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "title": "계좌번호 입력",
+      "instruction": "키패드로 계좌번호를 입력하세요",
+      "showTopNav": true,
+      "showBottomNav": false,
+      "clickAreas": [],
+      "keypad": {
+        "type": "number",
+        "targetValue": "",
+        "keys": []
+      }
+    },
+    {
+      "step": 4,
+      "title": "계좌 확인",
+      "instruction": "받는 분의 이름을 확인해주세요",
+      "showTopNav": true,
+      "showBottomNav": false,
+      "clickAreas": [
+        {
+          "label": "확인",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "title": "이체 금액",
+      "instruction": "이체할 금액을 선택해주세요",
+      "showTopNav": true,
+      "showBottomNav": false,
+      "clickAreas": [
+        {
+          "label": "1만원",
+          "left": 10,
+          "top": 40,
+          "width": 35,
+          "height": 10
+        }
+      ]
+    },
+    {
+      "step": 6,
+      "title": "금액 입력",
+      "instruction": "키패드로 금액을 입력하세요 (1만원)",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [],
+      "keypad": {
+        "type": "amount",
+        "targetValue": "10000",
+        "keys": []
+      }
+    },
+    {
+      "step": 7,
+      "title": "금액 확인",
+      "instruction": "입력한 금액을 확인하고 다음을 눌러주세요",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [
+        {
+          "label": "다음",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 8,
+      "title": "통장 표시",
+      "instruction": "통장에 표시될 내용을 확인해주세요",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [
+        {
+          "label": "다음",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 9,
+      "title": "이체 내역 확인",
+      "instruction": "이체 내역을 최종 확인해주세요",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [
+        {
+          "label": "다음",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 10,
+      "title": "비밀번호 입력",
+      "instruction": "계좌 비밀번호 6자리를 입력하세요",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [],
+      "keypad": {
+        "type": "password",
+        "targetValue": "123456",
+        "keys": []
+      }
+    },
+    {
+      "step": 11,
+      "title": "이체 중",
+      "instruction": "이체를 처리하고 있습니다",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [],
+      "autoNext": 2000
+    },
+    {
+      "step": 12,
+      "title": "이체 완료",
+      "instruction": "이체가 완료되었습니다",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [
+        {
+          "label": "확인",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    },
+    {
+      "step": 13,
+      "title": "이체 결과",
+      "instruction": "이체 결과를 확인하세요",
+      "showTopNav": false,
+      "showBottomNav": true,
+      "clickAreas": [
+        {
+          "label": "홈으로",
+          "left": 10,
+          "top": 85,
+          "width": 80,
+          "height": 8
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<script>
+// ===== 전역 변수 =====
+let currentStep = 1;
+let debugMode = false;
+const totalSteps = 13;
+let stepsConfig = [];
+let keypadInput = '';
+
+// ===== DOM 요소 =====
+const svgContainer = document.getElementById('svgContainer');
+const contentArea = document.getElementById('contentArea');
+const topNav = document.getElementById('topNav');
+const bottomNav = document.getElementById('bottomNav');
+const guideMessage = document.getElementById('guideMessage');
+const progressIndicator = document.getElementById('progressIndicator');
+const debugToggle = document.getElementById('debugToggle');
+
+// ===== 초기화 =====
+function init() {
+  // JSON 데이터 로드
+  const stepsDataEl = document.getElementById('stepsData');
+  const data = JSON.parse(stepsDataEl.textContent);
+  stepsConfig = data.steps;
+
+  // 이벤트 리스너
+  debugToggle.addEventListener('click', toggleDebugMode);
+
+  // 첫 화면 로드
+  loadStep(currentStep);
+}
+
+// ===== 단계 로드 =====
+function loadStep(stepNumber) {
+  const step = stepsConfig.find(s => s.step === stepNumber);
+  if (!step) {
+    console.error('Step not found:', stepNumber);
+    return;
+  }
+
+  currentStep = stepNumber;
+
+  // 진행 표시 업데이트
+  progressIndicator.textContent = `${currentStep} / ${totalSteps}`;
+
+  // 네비게이션 바 표시/숨김
+  topNav.style.display = step.showTopNav ? 'flex' : 'none';
+  bottomNav.style.display = step.showBottomNav ? 'flex' : 'none';
+
+  // SVG 정렬 방식 설정 (1~5: 상단, 6~13: 하단)
+  svgContainer.className = 'svg-container';
+  if (stepNumber >= 1 && stepNumber <= 5) {
+    svgContainer.classList.add('align-top');
+  } else {
+    svgContainer.classList.add('align-bottom');
+  }
+
+  // SVG 이미지 로드
+  loadSVG(stepNumber);
+
+  // 안내 메시지 업데이트
+  guideMessage.textContent = step.instruction;
+
+  // 클릭 영역 생성
+  createClickAreas(step);
+
+  // 키패드 처리
+  if (step.keypad) {
+    keypadInput = '';
+    // 키패드 영역은 SVG에서 좌표를 감지하여 처리
+  }
+
+  // 자동 다음 단계
+  if (step.autoNext) {
+    setTimeout(() => {
+      nextStep();
+    }, step.autoNext);
+  }
+}
+
+// ===== SVG 로드 =====
+function loadSVG(stepNumber) {
+  const svgPath = `../svg파일/${stepNumber}.svg`;
+
+  // 기존 내용 제거
+  svgContainer.innerHTML = '';
+
+  // SVG 로드
+  const img = document.createElement('img');
+  img.src = svgPath;
+  img.alt = `Step ${stepNumber}`;
+
+  img.onerror = () => {
+    console.error('Failed to load SVG:', svgPath);
+    svgContainer.innerHTML = '<div style="padding: 20px; text-align: center;">이미지를 불러올 수 없습니다</div>';
+  };
+
+  svgContainer.appendChild(img);
+}
+
+// ===== 클릭 영역 생성 =====
+function createClickAreas(step) {
+  // 기존 클릭 영역 제거
+  const existingAreas = contentArea.querySelectorAll('.clickable-area');
+  existingAreas.forEach(area => area.remove());
+
+  if (!step.clickAreas || step.clickAreas.length === 0) {
+    return;
+  }
+
+  // 새 클릭 영역 생성
+  step.clickAreas.forEach((area, index) => {
+    const clickDiv = document.createElement('div');
+    clickDiv.className = 'clickable-area';
+    if (debugMode) {
+      clickDiv.classList.add('debug');
+    }
+    clickDiv.dataset.label = area.label || `영역 ${index + 1}`;
+
+    // 위치 설정 (퍼센트 기반)
+    clickDiv.style.left = `${area.left}%`;
+    clickDiv.style.top = `${area.top}%`;
+    clickDiv.style.width = `${area.width}%`;
+    clickDiv.style.height = `${area.height}%`;
+
+    // 클릭 이벤트
+    clickDiv.addEventListener('click', () => {
+      handleClick(area);
+    });
+
+    contentArea.appendChild(clickDiv);
+  });
+}
+
+// ===== 클릭 처리 =====
+function handleClick(area) {
+  console.log('Clicked:', area.label);
+
+  // 다음 단계로 이동
+  nextStep();
+}
+
+// ===== 다음 단계 =====
+function nextStep() {
+  if (currentStep < totalSteps) {
+    loadStep(currentStep + 1);
+  } else {
+    // 마지막 단계 - 처음으로
+    if (confirm('체험을 완료했습니다! 처음부터 다시 하시겠습니까?')) {
+      loadStep(1);
+    }
+  }
+}
+
+// ===== 디버그 모드 토글 =====
+function toggleDebugMode() {
+  debugMode = !debugMode;
+  debugToggle.textContent = debugMode ? '디버그 모드 ON' : '디버그 모드 OFF';
+  debugToggle.classList.toggle('active', debugMode);
+
+  // 클릭 영역 다시 생성
+  const step = stepsConfig.find(s => s.step === currentStep);
+  if (step) {
+    createClickAreas(step);
+  }
+}
+
+// ===== 키패드 입력 처리 (향후 구현) =====
+function handleKeypadInput(key) {
+  const step = stepsConfig.find(s => s.step === currentStep);
+  if (!step || !step.keypad) return;
+
+  keypadInput += key;
+
+  // 목표 값과 비교
+  if (step.keypad.targetValue && keypadInput === step.keypad.targetValue) {
+    setTimeout(() => {
+      nextStep();
+    }, 300);
+  }
+}
+
+// ===== 페이지 로드 시 초기화 =====
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
