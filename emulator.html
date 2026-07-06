@@ -255,7 +255,7 @@ body {
   transition: none;
 }
 
-/* 13단계 전용 - 4초 후: -20% 스크롤 */
+/* 13단계 전용 - 2.5초 후: -20% 스크롤 */
 .svg-container.focus-step-13 img {
   transform: translateY(-20%);
   transform-origin: top center;
@@ -1630,7 +1630,7 @@ function applyFocusScroll(config) {
       });
     }, 100);
 
-    // 4초 후: 스크롤 시작
+    // 2.5초 후: 스크롤 시작
     stepTimeout = setTimeout(() => {
       if (currentStep === 13) {
         // 스크롤
@@ -1677,7 +1677,7 @@ function applyFocusScroll(config) {
           }
         }, 600); // 스크롤 애니메이션 완료 대기
       }
-    }, 4000);
+    }, 2500);
 
     return;
   }
