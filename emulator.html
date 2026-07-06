@@ -1502,15 +1502,15 @@ function applyFocusScroll(config) {
   if (currentStep === 10) {
     svgContainer.classList.add('focus-step-10');
 
-    // 첫 번째 말풍선: top-4, 두 줄로 넓이 늘리기
+    // 첫 번째 말풍선: top -3, 넓이 1.5배, 두 줄
     setTimeout(() => {
       const bubble1 = document.createElement('div');
       bubble1.className = 'speech-bubble';
       bubble1.textContent = '먼저 내통장표기와 받는분 통장표기를 확인해주세요';
       bubble1.style.position = 'absolute';
       bubble1.style.left = '50%';
-      bubble1.style.top = '29%';
-      bubble1.style.maxWidth = '90%';
+      bubble1.style.top = '26%';
+      bubble1.style.maxWidth = '135%';
       bubble1.style.textAlign = 'center';
       bubble1.style.webkitLineClamp = '2';
       bubble1.style.display = '-webkit-box';
@@ -1529,7 +1529,7 @@ function applyFocusScroll(config) {
         const oldBubble = document.getElementById('step10-bubble1');
         if (oldBubble) oldBubble.remove();
 
-        // 두 번째 말풍선: top-4, 두 줄로 넓이 늘리기
+        // 두 번째 말풍선: 넓이 1.5배, 두 줄
         const config = STEPS_CONFIG[currentStep];
         if (config && config.clickAreas && config.clickAreas.length > 0) {
           const area = config.clickAreas[0];
@@ -1539,7 +1539,7 @@ function applyFocusScroll(config) {
           bubble2.style.position = 'absolute';
           bubble2.style.left = '50%';
           bubble2.style.bottom = `${100 - area.top + 9}%`;
-          bubble2.style.maxWidth = '90%';
+          bubble2.style.maxWidth = '135%';
           bubble2.style.textAlign = 'center';
           bubble2.style.webkitLineClamp = '2';
           bubble2.style.display = '-webkit-box';
@@ -1557,7 +1557,7 @@ function applyFocusScroll(config) {
 
   // 11단계는 스크롤 없음 (상단 정렬) + 순차 말풍선
   if (currentStep === 11) {
-    // 첫 번째 말풍선: 중앙정렬 + top+3 + 두 줄로 넓이 늘리기
+    // 첫 번째 말풍선: 중앙정렬 + 넓이 1.5배 + 두 줄
     setTimeout(() => {
       const bubble1 = document.createElement('div');
       bubble1.className = 'speech-bubble';
@@ -1565,7 +1565,7 @@ function applyFocusScroll(config) {
       bubble1.style.position = 'absolute';
       bubble1.style.left = '50%';
       bubble1.style.top = '29%';
-      bubble1.style.maxWidth = '90%';
+      bubble1.style.maxWidth = '135%';
       bubble1.style.textAlign = 'center';
       bubble1.style.webkitLineClamp = '2';
       bubble1.style.display = '-webkit-box';
@@ -1584,7 +1584,7 @@ function applyFocusScroll(config) {
         const oldBubble = document.getElementById('step11-bubble1');
         if (oldBubble) oldBubble.remove();
 
-        // 두 번째 말풍선: 중앙정렬 + top+1 + 두 줄로 넓이 늘리기
+        // 두 번째 말풍선: 중앙정렬 + 넓이 1.5배 + top +2
         const config = STEPS_CONFIG[currentStep];
         if (config && config.clickAreas && config.clickAreas.length > 0) {
           const area = config.clickAreas[0];
@@ -1593,8 +1593,8 @@ function applyFocusScroll(config) {
           bubble2.textContent = '확인이 끝나면 다음버튼을 눌러주세요';
           bubble2.style.position = 'absolute';
           bubble2.style.left = '50%';
-          bubble2.style.bottom = `${100 - area.top + 4}%`;
-          bubble2.style.maxWidth = '90%';
+          bubble2.style.bottom = `${100 - area.top + 2}%`;
+          bubble2.style.maxWidth = '135%';
           bubble2.style.textAlign = 'center';
           bubble2.style.webkitLineClamp = '2';
           bubble2.style.display = '-webkit-box';
@@ -2123,10 +2123,10 @@ function createSpeechBubble(area, text) {
     return;
   }
 
-  // 5단계 특별 처리 (위치 고정)
+  // 5단계 특별 처리 (위치 고정, top +3)
   if (currentStep === 5) {
     bubble.classList.add('arrow-top');
-    bubble.style.top = '20.1067%';
+    bubble.style.top = '23.1067%';
     bubble.style.left = '48.9567%';
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
@@ -2134,12 +2134,12 @@ function createSpeechBubble(area, text) {
     return;
   }
 
-  // 6단계 특별 처리 (중앙정렬)
+  // 6단계 특별 처리 (중앙정렬, 넓이 1.5배)
   if (currentStep === 6) {
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = '55.15%';
     bubble.style.left = '50%';
-    bubble.style.maxWidth = '600px';
+    bubble.style.maxWidth = '900px';
     bubble.style.textAlign = 'center';
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
@@ -2167,18 +2167,18 @@ function createSpeechBubble(area, text) {
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
   } else if (currentStep === 3) {
-    // 3단계: 중앙정렬 + 넓이 늘리기 (2줄 이내)
+    // 3단계: 중앙정렬 + 넓이 1.5배 (2줄 이내)
     bubble.classList.add('arrow-top');
     bubble.style.top = `${areaTop + areaHeight + 3}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = '90%';
+    bubble.style.maxWidth = '135%';
     bubble.style.webkitLineClamp = '2';
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
   } else if (currentStep === 7) {
-    // 7단계: 중앙정렬 + 한 줄 + top 조정 (추가로 4 더 내림)
+    // 7단계: 중앙정렬 + 한 줄 + top 조정
     bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = `${100 - areaTop + 8}%`;
+    bubble.style.bottom = `${100 - areaTop + 11}%`;
     bubble.style.left = '50%';
     bubble.style.maxWidth = '90%';
     bubble.style.whiteSpace = 'nowrap';
@@ -2194,10 +2194,11 @@ function createSpeechBubble(area, text) {
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
   } else if (currentStep === 12) {
-    // 12단계: 중앙정렬
+    // 12단계: 중앙정렬 + 넓이 1.5배
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = `${100 - areaTop + 3}%`;
     bubble.style.left = '50%';
+    bubble.style.maxWidth = '135%';
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
   } else if (areaTop < 30) {
