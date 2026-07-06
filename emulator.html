@@ -549,9 +549,10 @@ body:not(.debug-mode) .highlight-area {
   line-height: 1.5;
   box-shadow: 0 6px 20px rgba(200, 16, 46, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 5;
-  max-width: calc(100vw - 40px);
-  word-break: keep-all;
+  max-width: min(98%, 440px);
+  word-break: normal;
   overflow-wrap: break-word;
+  white-space: normal;
   font-weight: 600;
   pointer-events: none;
   letter-spacing: -0.3px;
@@ -1515,7 +1516,7 @@ function applyFocusScroll(config) {
       bubble1.style.position = 'absolute';
       bubble1.style.left = '50%';
       bubble1.style.top = '26%';
-      bubble1.style.maxWidth = 'calc(100vw - 40px)';
+      bubble1.style.maxWidth = '98%';
       bubble1.style.textAlign = 'center';
       bubble1.style.webkitLineClamp = '2';
       bubble1.style.display = '-webkit-box';
@@ -1544,7 +1545,7 @@ function applyFocusScroll(config) {
           bubble2.style.position = 'absolute';
           bubble2.style.left = '50%';
           bubble2.style.bottom = `${100 - area.top + 9}%`;
-          bubble2.style.maxWidth = 'calc(100vw - 40px)';
+          bubble2.style.maxWidth = '98%';
           bubble2.style.textAlign = 'center';
           bubble2.style.webkitLineClamp = '2';
           bubble2.style.display = '-webkit-box';
@@ -1570,7 +1571,7 @@ function applyFocusScroll(config) {
       bubble1.style.position = 'absolute';
       bubble1.style.left = '50%';
       bubble1.style.top = '29%';
-      bubble1.style.maxWidth = 'calc(100vw - 40px)';
+      bubble1.style.maxWidth = '98%';
       bubble1.style.textAlign = 'center';
       bubble1.style.webkitLineClamp = '2';
       bubble1.style.display = '-webkit-box';
@@ -1599,7 +1600,7 @@ function applyFocusScroll(config) {
           bubble2.style.position = 'absolute';
           bubble2.style.left = '50%';
           bubble2.style.bottom = `${100 - area.top + 2}%`;
-          bubble2.style.maxWidth = 'calc(100vw - 40px)';
+          bubble2.style.maxWidth = '98%';
           bubble2.style.textAlign = 'center';
           bubble2.style.webkitLineClamp = '2';
           bubble2.style.display = '-webkit-box';
@@ -1663,7 +1664,7 @@ function applyFocusScroll(config) {
               bubble.style.position = 'absolute';
               bubble.style.left = '50%';
               bubble.style.bottom = '17.4615%';
-              bubble.style.maxWidth = 'calc(100vw - 40px)';
+              bubble.style.maxWidth = '98%';
               bubble.style.display = '-webkit-box';
               bubble.style.webkitLineClamp = '2';
               bubble.style.webkitBoxOrient = 'vertical';
@@ -1756,7 +1757,7 @@ function applyFocusScroll(config) {
         bubble.style.position = 'absolute';
         bubble.style.left = '50%';
         bubble.style.top = '31%';
-        bubble.style.maxWidth = 'calc(100vw - 40px)';
+        bubble.style.maxWidth = '98%';
         bubble.style.display = '-webkit-box';
         bubble.style.webkitLineClamp = '2';
         bubble.style.webkitBoxOrient = 'vertical';
@@ -2100,12 +2101,12 @@ function createSpeechBubble(area, text) {
 
   const bubble = document.createElement('div');
   bubble.className = 'speech-bubble';
-  bubble.textContent = text;
+  bubble.textContent = text.replace(/\n/g, ' ');
 
   // 2단계 특별 처리 (SVG 안에서 반응형, 위치 고정)
   if (currentStep === 2) {
     bubble.classList.add('arrow-bottom');
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
@@ -2121,7 +2122,7 @@ function createSpeechBubble(area, text) {
   // 4단계 특별 처리 (중앙정렬, 반응형)
   if (currentStep === 4) {
     bubble.classList.add('arrow-bottom');
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
@@ -2139,7 +2140,7 @@ function createSpeechBubble(area, text) {
     bubble.classList.add('arrow-top');
     bubble.style.top = '26.1067%';
     bubble.style.left = '48.9567%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
     contentArea.appendChild(bubble);
@@ -2151,7 +2152,7 @@ function createSpeechBubble(area, text) {
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = '55.15%';
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.textAlign = 'center';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
@@ -2176,7 +2177,7 @@ function createSpeechBubble(area, text) {
     bubble.style.position = 'absolute';
     bubble.style.top = `${areaTop + areaHeight + 3}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.textAlign = 'center';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
@@ -2186,11 +2187,11 @@ function createSpeechBubble(area, text) {
     bubble.style.animation = 'none';
     bubble.style.transform = 'translateX(-50%)';
   } else if (currentStep === 3) {
-    // 3단계: 중앙정렬 + 최대 넓이 (2줄 이내)
+    // 3단계: 중앙정렬 + 반응형 (2줄 이내)
     bubble.classList.add('arrow-top');
     bubble.style.top = `${areaTop + areaHeight + 3}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
@@ -2202,7 +2203,7 @@ function createSpeechBubble(area, text) {
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = `${100 - areaTop + 11}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
@@ -2214,7 +2215,7 @@ function createSpeechBubble(area, text) {
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = `${100 - areaTop + 3}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
@@ -2226,7 +2227,7 @@ function createSpeechBubble(area, text) {
     bubble.classList.add('arrow-bottom');
     bubble.style.bottom = `${100 - areaTop + 3}%`;
     bubble.style.left = '50%';
-    bubble.style.maxWidth = 'calc(100vw - 40px)';
+    bubble.style.maxWidth = '98%';
     bubble.style.display = '-webkit-box';
     bubble.style.webkitLineClamp = '2';
     bubble.style.webkitBoxOrient = 'vertical';
