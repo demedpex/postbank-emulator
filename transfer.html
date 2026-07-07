@@ -609,15 +609,49 @@ body .clickable-area.keypad-hidden {
   top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(200, 16, 46, 0.95);
+  background: rgba(239, 83, 80, 0.95);
   color: #fff;
-  padding: 7px 18px;
+  padding: 8px 20px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
   z-index: 20;
-  box-shadow: 0 3px 15px rgba(200, 16, 46, 0.4);
+  box-shadow: 0 3px 15px rgba(239, 83, 80, 0.4);
   letter-spacing: 0.5px;
+}
+
+/* ===== 홈 버튼 (처음으로) ===== */
+.home-button {
+  position: absolute;
+  top: 12px;
+  right: 62px;
+  background: rgba(239, 83, 80, 0.95);
+  color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 3px 15px rgba(239, 83, 80, 0.4);
+  transition: all 0.2s;
+}
+
+.home-button:hover {
+  background: rgba(239, 83, 80, 1);
+  transform: scale(1.05);
+}
+
+.home-button:active {
+  transform: scale(0.95);
+}
+
+.home-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* ===== 가이드 메시지 크기 조절 버튼 ===== */
@@ -820,6 +854,13 @@ body .clickable-area.keypad-hidden {
   <div class="app-screen">
     <!-- 진행 표시 -->
     <div class="progress-indicator" id="progressIndicator">1 / 13</div>
+
+    <!-- 홈 버튼 (처음으로) -->
+    <div class="home-button" onclick="goToMenu()" title="처음으로">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    </div>
 
     <!-- 가이드 메시지 크기 조절 버튼 -->
     <div class="guide-size-toggle" id="guideSizeToggle">
@@ -1155,7 +1196,7 @@ const STEPS_CONFIG = {
     instruction: '이체가 완료되었습니다.',
     ttsText: '이체가 완료되었습니다. 이체내용을 확인하시고 체험을 종료하시려면, 확인버튼을 눌러주세요.',
     clickAreas: [
-      { label: '홈으로', left: 49.5833, top: 87, width: 47.5, height: 11, jumpToStep: 1 }
+      { label: '홈으로', left: 49.5833, top: 87, width: 47.5, height: 11, goToMenu: true }
     ],
     isLastStep: true
   }
@@ -1936,6 +1977,15 @@ function handleClick(area) {
     return;
   }
 
+  // 메뉴로 이동
+  if (area.goToMenu) {
+    showToast('success');
+    setTimeout(() => {
+      goToMenu();
+    }, 300);
+    return;
+  }
+
   // 일반 클릭
   showToast('success');
   setTimeout(() => {
@@ -2397,6 +2447,11 @@ window.getCoords = function(step = currentStep) {
 
   return config.clickAreas;
 };
+
+// ===== 메뉴로 이동 =====
+function goToMenu() {
+  window.location.href = 'index.html';
+}
 
 // ===== 페이지 로드 시 초기화 =====
 document.addEventListener('DOMContentLoaded', init);
