@@ -136,32 +136,23 @@ body {
 /* ===== 키패드 입력 표시 (SVG 위 오버레이) ===== */
 .keypad-input-display {
   position: absolute;
-  left: 50%;
-  top: 10%;
   transform: translateX(-50%);
-  background: #fff;
-  color: #2c3e50;
-  padding: 20px 40px;
-  border-radius: 14px;
-  border: 3px solid #C8102E;
+  color: #C8102E;
   font-size: 48px;
   font-weight: 700;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   z-index: 10;
-  min-width: 400px;
   text-align: center;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   font-family: 'Courier New', monospace;
   pointer-events: none;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .keypad-input-label {
-  font-size: 14px;
-  color: #C8102E;
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  letter-spacing: 0;
+  display: none;
 }
 
 /* ===== 컨텐츠 영역 ===== */
@@ -458,7 +449,7 @@ body {
 .scroll-down-icon {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 80%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -537,183 +528,6 @@ body:not(.debug-mode) .highlight-area {
   }
 }
 
-/* ===== 말풍선 (Speech Bubble) ===== */
-.speech-bubble {
-  position: absolute;
-  background: linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);
-  color: #2c3e50;
-  padding: 16px 24px;
-  border-radius: 16px;
-  border: 2px solid #C8102E;
-  font-size: 17px;
-  line-height: 1.5;
-  box-shadow: 0 6px 20px rgba(200, 16, 46, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 5;
-  max-width: min(98%, 440px);
-  word-break: normal;
-  overflow-wrap: break-word;
-  white-space: normal;
-  font-weight: 600;
-  pointer-events: none;
-  letter-spacing: -0.3px;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* 최대 두 줄 제한 */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 2단계, 4단계 말풍선 - 넓게, 한 줄 */
-.speech-bubble.wide {
-  max-width: 90% !important;
-  -webkit-line-clamp: 1 !important;
-  white-space: nowrap;
-}
-
-/* 말풍선 화살표 테두리 */
-.speech-bubble::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-}
-
-/* 말풍선 화살표 내부 */
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  z-index: 1;
-}
-
-/* 말풍선 화살표 - 아래쪽 */
-.speech-bubble.arrow-bottom::before {
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 12px solid #C8102E;
-}
-
-.speech-bubble.arrow-bottom::after {
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-2px);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #FFF5F5;
-}
-
-/* 말풍선 화살표 - 위쪽 */
-.speech-bubble.arrow-top::before {
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 12px solid #C8102E;
-}
-
-.speech-bubble.arrow-top::after {
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(2px);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #FFF5F5;
-}
-
-/* 말풍선 화살표 - 왼쪽 */
-.speech-bubble.arrow-left::before {
-  top: 50%;
-  right: 100%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-right: 12px solid #C8102E;
-}
-
-.speech-bubble.arrow-left::after {
-  top: 50%;
-  right: 100%;
-  transform: translateY(-50%) translateX(2px);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 10px solid #FFF5F5;
-}
-
-/* 말풍선 화살표 - 오른쪽 */
-.speech-bubble.arrow-right::before {
-  top: 50%;
-  left: 100%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 12px solid #C8102E;
-}
-
-.speech-bubble.arrow-right::after {
-  top: 50%;
-  left: 100%;
-  transform: translateY(-50%) translateX(-2px);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-left: 10px solid #FFF5F5;
-}
-
-/* 말풍선 페이드인 애니메이션 */
-@keyframes bubbleFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.speech-bubble {
-  animation: bubbleFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* 말풍선 미세한 흔들림 애니메이션 */
-@keyframes bubbleFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
-.speech-bubble {
-  animation: bubbleFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-             bubbleFloat 3s ease-in-out infinite 0.5s;
-}
 
 /* 키패드 버튼 애니메이션 제거 */
 .clickable-area.keypad-button {
@@ -746,10 +560,10 @@ body .clickable-area.keypad-hidden {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  font-size: 13px;
   line-height: 1.6;
   z-index: 10;
   letter-spacing: -0.2px;
+  font-weight: 500;
 }
 
 .guide-message-text {
@@ -799,6 +613,68 @@ body .clickable-area.keypad-hidden {
   letter-spacing: 0.5px;
 }
 
+/* ===== 가이드 메시지 크기 조절 버튼 ===== */
+.guide-size-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(200, 16, 46, 0.95);
+  color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 3px 15px rgba(200, 16, 46, 0.4);
+  transition: all 0.2s;
+}
+
+.guide-size-toggle:hover {
+  background: rgba(200, 16, 46, 1);
+  transform: scale(1.05);
+}
+
+.guide-size-toggle:active {
+  transform: scale(0.95);
+}
+
+.guide-size-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 가이드 메시지 크기 단계 */
+.guide-message.size-small {
+  font-size: 18px;
+}
+
+.guide-message.size-medium {
+  font-size: 22px;
+}
+
+.guide-message.size-large {
+  font-size: 26px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .guide-message.size-small {
+    font-size: 17px;
+  }
+
+  .guide-message.size-medium {
+    font-size: 21px;
+  }
+
+  .guide-message.size-large {
+    font-size: 25px;
+  }
+}
+
 /* ===== 반응형 디자인 ===== */
 @media (max-width: 768px) {
   .phone-frame {
@@ -819,7 +695,6 @@ body .clickable-area.keypad-hidden {
 
   /* 작은 폰트 조정 */
   .guide-message {
-    font-size: 14px;
     padding: 12px 15px;
   }
 }
@@ -939,6 +814,13 @@ body .clickable-area.keypad-hidden {
     <!-- 진행 표시 -->
     <div class="progress-indicator" id="progressIndicator">1 / 13</div>
 
+    <!-- 가이드 메시지 크기 조절 버튼 -->
+    <div class="guide-size-toggle" id="guideSizeToggle">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"/>
+      </svg>
+    </div>
+
     <!-- 상단 네비게이션 바 (완전히 제거됨) -->
 
     <!-- 컨텐츠 영역 -->
@@ -1027,6 +909,7 @@ body .clickable-area.keypad-hidden {
 })();
 
 // ===== 전역 변수 =====
+const CACHE_VERSION = '20250107'; // 캐시 버스팅용 버전 (업데이트 시 변경)
 let currentStep = 1;
 let debugMode = false;
 let showHints = true;
@@ -1036,7 +919,8 @@ let keypadType = null;
 let currentClickAreas = [];
 let currentHighlightAreas = [];
 let stepTimeout = null; // 8단계 애니메이션 타이머
-let step13Bubble = null; // 13단계 말풍선 (반응형 처리용)
+let guideSizeLevel = 1; // 가이드 메시지 크기: 0(작음), 1(중간), 2(크게)
+let keypadDisplayElement = null; // 키패드 입력 표시 요소
 
 // ===== TTS 관련 =====
 window.ttsEnabled = true; // TTS 기본 ON
@@ -1056,6 +940,7 @@ const contentArea = document.getElementById('contentArea');
 const bottomNav = document.getElementById('bottomNav');
 const guideMessage = document.getElementById('guideMessage');
 const progressIndicator = document.getElementById('progressIndicator');
+const guideSizeToggle = document.getElementById('guideSizeToggle');
 const debugToggle = document.getElementById('debugToggle');
 const hintToggle = document.getElementById('hintToggle');
 const prevStepBtn = document.getElementById('prevStep');
@@ -1105,8 +990,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: false,
     align: 'top',
-    instruction: '최근 이체 대상을 선택하거나 계좌번호를 입력하세요',
-    ttsText: '계좌번호를 입력하시거나,\n최근에 이체한 대상에게 보내시는 경우 하단 대상을 눌러주세요.',
+    instruction: '이체하실 대상을 선택해주세요.',
+    ttsText: '계좌번호를 직접 입력하시거나, 최근에 이체하신 대상에게 보내시는 경우 하단에 이체대상을 눌러주세요.',
     clickAreas: [
       { label: '계좌번호입력', left: 1.66, top: 16, width: 94.8, height: 8, jumpToStep: 4 },
       { label: '최근이체대상', left: 2.29, top: 41, width: 94, height: 11, jumpToStep: 8 }
@@ -1116,8 +1001,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: false,
     align: 'top',
-    instruction: '받을 계좌의 은행을 선택해주세요',
-    ttsText: '보내실 계좌의 은행을 선택하겠습니다.\n체험을 위해 임의로 신한은행을 선택하겠습니다.',
+    instruction: '이체하실 은행을 선택해주세요.',
+    ttsText: '보내실 계좌의 은행을 선택할게요. 체험을 위해 임의로 신한은행을 선택하겠습니다.',
     clickAreas: [
       { label: '은행선택', left: 51.25, top: 62, width: 44, height: 9 }
     ]
@@ -1126,8 +1011,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: false,
     align: 'top',
-    instruction: '계좌번호 입력을 눌러주세요',
-    ttsText: '보내실 대상의 계좌번호를 입력하겠습니다. 계좌번호 입력화면을 눌러주세요.',
+    instruction: '계좌번호 입력 화면을 눌러주세요.',
+    ttsText: '이체하실 대상의 계좌번호를 입력하겠습니다. 먼저, 계좌번호 입력 화면을 눌러주세요.',
     clickAreas: [
       { label: '계좌번호입력', left: 1.87, top: 22, width: 94.17, height: 8.5 }
     ]
@@ -1136,8 +1021,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'bottom',
-    instruction: '계좌번호를 입력해주세요 (123456789)',
-    ttsText: '체험을 위해,\n계좌번호 일, 이, 삼, 사, 오, 육, 칠, 팔, 구 번호를 차례대로 눌러주세요.',
+    instruction: '계좌번호 [123456789]를 눌러주세요.',
+    ttsText: '체험을 위해, 계좌번호 일, 이, 삼, 사, 오, 육, 칠, 팔, 구, 번호를 차례대로 눌러주세요.',
     keypad: 'account',
     targetValue: '123456789',
     clickAreas: [
@@ -1160,8 +1045,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'top',
-    instruction: '다음 버튼을 눌러주세요',
-    ttsText: '이체 대상 계좌가 입력 완료하셨으면, 다음버튼을 눌러주세요.',
+    instruction: '계좌번호 확인 후 다음을 눌러주세요.',
+    ttsText: '이체 대상의 계좌번호를 입력완료하셨으면, 다음버튼을 눌러주세요.',
     clickAreas: [
       { label: '다음', left: 1.87333, top: 77, width: 95, height: 16.5 }
     ]
@@ -1170,8 +1055,10 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'bottom',
-    instruction: '금액을 입력해주세요',
-    ttsText: '얼마를 이체하실지 금액을 입력해주세요.\n체험을 위해, 1만원 또는 일, 영, 영, 영, 영을 입력해주세요.',
+    instruction: '보내실 이체 대상을 다시한번 확인해주세요.',
+    instructionAfterScroll: '보내실 이체 금액 1만원을 입력해주세요.',
+    ttsText: '화면의 보내실 이체 대상을 확인해주시고 아래 하단의 버튼을 클릭해주세요.',
+    ttsTextAfterScroll: '원하시는 이체 금액을 입력해주세요. 체험을 위해, 1만원 또는 일, 영, 영, 영, 영을 입력해주세요.',
     keypad: 'amount',
     targetValue: '10000',
     clickAreas: [
@@ -1198,8 +1085,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'bottom',
-    instruction: '다음 버튼을 눌러주세요',
-    ttsText: '보내실 금액을 입력하셨으면, 다음버튼을 눌러주세요.',
+    instruction: '보내실 금액을 확인 후 다음버튼을 눌러주세요.',
+    ttsText: '보내실 금액을 입력하셨으면, 다음 버튼을 눌러주세요.',
     clickAreas: [
       { label: '다음', left: 2.29167, top: 88.5, width: 95.2084, height: 11 }
     ]
@@ -1208,8 +1095,8 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'top', // 4단계처럼 상단 정렬
-    instruction: '다음 버튼을 눌러주세요',
-    ttsText: '받으실 대상에게, 또는 내 통장에 표시될 내용을 확인해주시고,\n다음버튼을 눌러주세요.',
+    instruction: '이체 통장표기를 확인해주세요.',
+    ttsText: '받으실 대상 그리고 내 통장에 표시 될 표기 내용을 확인하시고, 다음버튼을 눌러주세요.',
     clickAreas: [
       { label: '다음', left: 2.5, top: 88, width: 94.375, height: 11 }
     ],
@@ -1222,7 +1109,7 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'top', // 상단 정렬
-    instruction: '다음 버튼을 눌러주세요',
+    instruction: '이체 내용을 다시한번 확인해주세요.',
     ttsText: '마지막으로, 보내실 대상과 금액을 확인하시고, 다음버튼을 눌러주세요.',
     clickAreas: [
       { label: '다음', left: 2.08333, top: 82, width: 95.2083, height: 15 }
@@ -1235,31 +1122,31 @@ const STEPS_CONFIG = {
     showTopNav: false,
     showBottomNav: true,
     align: 'bottom',
-    instruction: '비밀번호 6자리를 입력해주세요 (123456)',
-    ttsText: '이체 인증을 진행하겠습니다.\n체험을 위해, 비밀번호 일, 이, 삼, 사, 오, 육을 눌러주세요.',
+    instruction: '비밀번호 [123456]을 눌러주세요.',
+    ttsText: '인증을 진행하겠습니다. 체험을 위해, 비밀번호 일, 이, 삼, 사, 오, 육을 눌러주세요.',
     keypad: 'password',
     targetValue: '123456',
     clickAreas: [
-      // 키패드 숫자 0~9 + 지우기 - 박스 4/5 아래로
-      { label: '1', left: 0.625, top: 61.6, width: 24.0417, height: 9.5, keyValue: '1' },
-      { label: '2', left: 50, top: 61.6, width: 24.6667, height: 9.5, keyValue: '2' },
-      { label: '3', left: 75.5417, top: 61.6, width: 24.4583, height: 9.5, keyValue: '3' },
-      { label: '4', left: 0.416667, top: 71.6, width: 24.0417, height: 9.5, keyValue: '4' },
-      { label: '5', left: 25.4167, top: 71.6, width: 24.875, height: 9.5, keyValue: '5' },
-      { label: '6', left: 75.625, top: 71.6, width: 24.0417, height: 9.5, keyValue: '6' },
-      { label: '7', left: 0.208333, top: 81.6, width: 24.0417, height: 9.5, keyValue: '7' },
-      { label: '8', left: 25.2083, top: 81.6, width: 25.0833, height: 9.5, keyValue: '8' },
-      { label: '9', left: 51.0417, top: 81.6, width: 22.7917, height: 9.5, keyValue: '9' },
-      { label: '0', left: 74.9167, top: 81.6, width: 24.6667, height: 9.5, keyValue: '0' },
-      { label: '지우기', left: 0.416667, top: 91.6, width: 24.6667, height: 9.5, keyValue: 'delete' }
+      // 키패드 숫자 0~9 + 지우기 (높이 2/3, 간격 조정, top +10)
+      { label: '1', left: 0.625, top: 71.6, width: 24.0417, height: 6.33, keyValue: '1' },
+      { label: '2', left: 50, top: 71.6, width: 24.6667, height: 6.33, keyValue: '2' },
+      { label: '3', left: 75.5417, top: 71.6, width: 24.4583, height: 6.33, keyValue: '3' },
+      { label: '4', left: 0.416667, top: 78.43, width: 24.0417, height: 6.33, keyValue: '4' },
+      { label: '5', left: 25.4167, top: 78.43, width: 24.875, height: 6.33, keyValue: '5' },
+      { label: '6', left: 75.625, top: 78.43, width: 24.0417, height: 6.33, keyValue: '6' },
+      { label: '7', left: 0.208333, top: 85.26, width: 24.0417, height: 6.33, keyValue: '7' },
+      { label: '8', left: 25.2083, top: 85.26, width: 25.0833, height: 6.33, keyValue: '8' },
+      { label: '9', left: 51.0417, top: 85.26, width: 22.7917, height: 6.33, keyValue: '9' },
+      { label: '0', left: 74.9167, top: 85.26, width: 24.6667, height: 6.33, keyValue: '0' },
+      { label: '지우기', left: 0.416667, top: 92.09, width: 24.6667, height: 6.33, keyValue: 'delete' }
     ]
   },
   13: {
     showTopNav: false,
     showBottomNav: true,
     align: 'top', // 상단 정렬 (4단계처럼)
-    instruction: '체험 완료! 홈으로 돌아가기',
-    ttsText: '이체가 완료되었습니다. 체험을 종료하시려면, 확인버튼을 눌러주세요.',
+    instruction: '이체가 완료되었습니다.',
+    ttsText: '이체가 완료되었습니다. 이체내용을 확인하시고 체험을 종료하시려면, 확인버튼을 눌러주세요.',
     clickAreas: [
       { label: '홈으로', left: 49.5833, top: 87, width: 47.5, height: 11, jumpToStep: 1 }
     ],
@@ -1297,6 +1184,32 @@ function init() {
     resetBtn.addEventListener('click', () => goToStep(1));
   }
 
+  // 가이드 메시지 크기 조절 버튼
+  if (guideSizeToggle) {
+    guideSizeToggle.addEventListener('click', () => {
+      // 크기 레벨 순환: 0(작음) → 1(중간) → 2(크게) → 0(작음)
+      guideSizeLevel = (guideSizeLevel + 1) % 3;
+
+      // 기존 크기 클래스 제거
+      guideMessage.classList.remove('size-small', 'size-medium', 'size-large');
+
+      // 새로운 크기 클래스 추가
+      if (guideSizeLevel === 0) {
+        guideMessage.classList.add('size-small');
+      } else if (guideSizeLevel === 1) {
+        guideMessage.classList.add('size-medium');
+      } else {
+        guideMessage.classList.add('size-large');
+      }
+
+      // 버튼에 피드백 효과
+      guideSizeToggle.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        guideSizeToggle.style.transform = '';
+      }, 200);
+    });
+  }
+
   restartBtn.addEventListener('click', () => {
     completionOverlay.classList.remove('show');
     goToStep(1);
@@ -1332,6 +1245,9 @@ function init() {
     }, 300);
   });
 
+  // 가이드 메시지 초기 크기 설정 (중간)
+  guideMessage.classList.add('size-medium');
+
   // 첫 화면 로드
   loadStep(1);
 }
@@ -1344,9 +1260,6 @@ function loadStep(stepNumber) {
   if (!config) {
     return;
   }
-
-  // 13단계 말풍선 초기화
-  step13Bubble = null;
 
   // ===== TTS 재생 =====
   if (config.ttsText && window.ttsEnabled) {
@@ -1369,7 +1282,10 @@ function loadStep(stepNumber) {
 
   // 키패드 입력 표시 제거
   const keypadDisplay = contentArea.querySelector('.keypad-input-display');
-  if (keypadDisplay) keypadDisplay.remove();
+  if (keypadDisplay) {
+    keypadDisplay.remove();
+    keypadDisplayElement = null; // 전역 변수 초기화
+  }
 
   // align 즉시 설정 (스크롤 문제 방지)
   if (stepNumber === 8) {
@@ -1392,17 +1308,18 @@ function loadStep(stepNumber) {
   // topNav.style.display = config.showTopNav ? 'flex' : 'none'; // 제거됨
   bottomNav.style.display = config.showBottomNav ? 'flex' : 'none';
 
-  // SVG 이미지 로드
+  // SVG 이미지 로드 (캐시 버스팅 적용)
   const newSrc = stepNumber === 6 ? '6-1.svg' : stepNumber === 7 ? '7-1.svg' : `${stepNumber}.svg`;
-  const needsLoad = stepImage.src !== new URL(newSrc, window.location.href).href;
+  const newSrcWithVersion = `${newSrc}?v=${CACHE_VERSION}`;
+  const needsLoad = stepImage.src !== new URL(newSrcWithVersion, window.location.href).href;
 
-  stepImage.src = newSrc;
+  stepImage.src = newSrcWithVersion;
   stepImage.alt = `Step ${stepNumber}`;
 
-  // 안내 메시지 업데이트 (ttsText 우선, 없으면 instruction)
+  // 안내 메시지 업데이트 (instruction 우선, 없으면 ttsText)
   const guideMessageText = guideMessage.querySelector('.guide-message-text');
   if (guideMessageText) {
-    guideMessageText.textContent = config.ttsText || config.instruction;
+    guideMessageText.textContent = config.instruction || config.ttsText;
   }
 
   // SVG 로드 완료 후 UI 생성
@@ -1504,115 +1421,14 @@ function applyFocusScroll(config) {
     return;
   }
 
-  // 10단계는 4단계처럼 위로 스크롤 + 순차 말풍선
+  // 10단계는 4단계처럼 위로 스크롤
   if (currentStep === 10) {
     svgContainer.classList.add('focus-step-10');
-
-    // 첫 번째 말풍선: top -3, 최대 넓이, 두 줄
-    setTimeout(() => {
-      const bubble1 = document.createElement('div');
-      bubble1.className = 'speech-bubble';
-      bubble1.textContent = '먼저 내통장표기와 받는분 통장표기를 확인해주세요';
-      bubble1.style.position = 'absolute';
-      bubble1.style.left = '50%';
-      bubble1.style.top = '26%';
-      bubble1.style.maxWidth = '98%';
-      bubble1.style.textAlign = 'center';
-      bubble1.style.webkitLineClamp = '2';
-      bubble1.style.display = '-webkit-box';
-      bubble1.style.webkitBoxOrient = 'vertical';
-      bubble1.style.overflow = 'hidden';
-      bubble1.style.animation = 'none';
-      bubble1.style.transform = 'translateX(-50%)';
-      bubble1.id = 'step10-bubble1';
-      contentArea.appendChild(bubble1);
-    }, 100);
-
-    // 3초 후: 첫 번째 말풍선 제거 + 두 번째 말풍선 생성
-    stepTimeout = setTimeout(() => {
-      if (currentStep === 10) {
-        // 첫 번째 말풍선 제거
-        const oldBubble = document.getElementById('step10-bubble1');
-        if (oldBubble) oldBubble.remove();
-
-        // 두 번째 말풍선: 최대 넓이, 두 줄
-        const config = STEPS_CONFIG[currentStep];
-        if (config && config.clickAreas && config.clickAreas.length > 0) {
-          const area = config.clickAreas[0];
-          const bubble2 = document.createElement('div');
-          bubble2.className = 'speech-bubble arrow-bottom';
-          bubble2.textContent = '확인이 끝나면 다음버튼을 눌러주세요';
-          bubble2.style.position = 'absolute';
-          bubble2.style.left = '50%';
-          bubble2.style.bottom = `${100 - area.top + 9}%`;
-          bubble2.style.maxWidth = '98%';
-          bubble2.style.textAlign = 'center';
-          bubble2.style.webkitLineClamp = '2';
-          bubble2.style.display = '-webkit-box';
-          bubble2.style.webkitBoxOrient = 'vertical';
-          bubble2.style.overflow = 'hidden';
-          bubble2.style.animation = 'none';
-          bubble2.style.transform = 'translateX(-50%)';
-          contentArea.appendChild(bubble2);
-        }
-      }
-    }, 3000);
-
     return;
   }
 
-  // 11단계는 스크롤 없음 (상단 정렬) + 순차 말풍선
+  // 11단계는 스크롤 없음 (상단 정렬)
   if (currentStep === 11) {
-    // 첫 번째 말풍선: 중앙정렬 + 최대 넓이 + 두 줄
-    setTimeout(() => {
-      const bubble1 = document.createElement('div');
-      bubble1.className = 'speech-bubble';
-      bubble1.textContent = '보낼대상과 금액을 다시한번 확인해주세요';
-      bubble1.style.position = 'absolute';
-      bubble1.style.left = '50%';
-      bubble1.style.top = '29%';
-      bubble1.style.maxWidth = '98%';
-      bubble1.style.textAlign = 'center';
-      bubble1.style.webkitLineClamp = '2';
-      bubble1.style.display = '-webkit-box';
-      bubble1.style.webkitBoxOrient = 'vertical';
-      bubble1.style.overflow = 'hidden';
-      bubble1.style.animation = 'none';
-      bubble1.style.transform = 'translateX(-50%)';
-      bubble1.id = 'step11-bubble1';
-      contentArea.appendChild(bubble1);
-    }, 100);
-
-    // 3초 후: 첫 번째 말풍선 제거 + 두 번째 말풍선 생성
-    stepTimeout = setTimeout(() => {
-      if (currentStep === 11) {
-        // 첫 번째 말풍선 제거
-        const oldBubble = document.getElementById('step11-bubble1');
-        if (oldBubble) oldBubble.remove();
-
-        // 두 번째 말풍선: 중앙정렬 + 최대 넓이 + top +2
-        const config = STEPS_CONFIG[currentStep];
-        if (config && config.clickAreas && config.clickAreas.length > 0) {
-          const area = config.clickAreas[0];
-          const bubble2 = document.createElement('div');
-          bubble2.className = 'speech-bubble arrow-bottom';
-          bubble2.textContent = '확인이 끝나면 다음버튼을 눌러주세요';
-          bubble2.style.position = 'absolute';
-          bubble2.style.left = '50%';
-          bubble2.style.bottom = `${100 - area.top + 2}%`;
-          bubble2.style.maxWidth = '98%';
-          bubble2.style.textAlign = 'center';
-          bubble2.style.webkitLineClamp = '2';
-          bubble2.style.display = '-webkit-box';
-          bubble2.style.webkitBoxOrient = 'vertical';
-          bubble2.style.overflow = 'hidden';
-          bubble2.style.animation = 'none';
-          bubble2.style.transform = 'translateX(-50%)';
-          contentArea.appendChild(bubble2);
-        }
-      }
-    }, 3000);
-
     return;
   }
 
@@ -1622,7 +1438,7 @@ function applyFocusScroll(config) {
     return;
   }
 
-  // 13단계는 상단 고정 → 4초 후 스크롤 → 스크롤 완료 후 빨간 박스 & 말풍선
+  // 13단계는 상단 고정 → 4초 후 스크롤 → 스크롤 완료 후 빨간 박스 표시
   if (currentStep === 13) {
     // 초기: 상단 고정
     svgContainer.classList.add('focus-step-13-initial');
@@ -1643,7 +1459,7 @@ function applyFocusScroll(config) {
         svgContainer.classList.remove('focus-step-13-initial');
         svgContainer.classList.add('focus-step-13');
 
-        // 스크롤 완료 후 (0.6초) 빨간 박스 & 말풍선 표시
+        // 스크롤 완료 후 (0.6초) 빨간 박스 표시
         setTimeout(() => {
           if (currentStep === 13) {
             const clickAreas = contentArea.querySelectorAll('.clickable-area');
@@ -1654,28 +1470,6 @@ function applyFocusScroll(config) {
               area.style.opacity = '1';
               area.style.transition = 'opacity 0.3s ease';
             });
-
-            // 말풍선 생성 (중앙정렬, 반응형, 최대 2줄)
-            const config = STEPS_CONFIG[currentStep];
-            if (config && config.clickAreas && config.clickAreas.length > 0) {
-              const bubble = document.createElement('div');
-              bubble.className = 'speech-bubble arrow-bottom';
-              bubble.textContent = '체험을 종료하시려면 확인을 눌러주세요';
-              bubble.style.position = 'absolute';
-              bubble.style.left = '50%';
-              bubble.style.bottom = '17.4615%';
-              bubble.style.maxWidth = '98%';
-              bubble.style.display = '-webkit-box';
-              bubble.style.webkitLineClamp = '2';
-              bubble.style.webkitBoxOrient = 'vertical';
-              bubble.style.overflow = 'hidden';
-              bubble.style.animation = 'none';
-              bubble.style.transform = 'translateX(-50%)';
-              contentArea.appendChild(bubble);
-
-              // 반응형 처리를 위해 저장
-              step13Bubble = bubble;
-            }
 
             // 스크롤 완료 후 좌표 재계산 (초기 vs 반응형 좌표 문제 해결)
             setTimeout(() => {
@@ -1714,7 +1508,7 @@ function applyFocusScroll(config) {
         <path d="M12 5 L12 19 M7 14 L12 19 L17 14"/>
       </svg>
       <div class="swipe-finger">👆</div>
-      <p>아래로 내려주세요</p>
+      <p>여기를 클릭해주세요</p>
     `;
     contentArea.appendChild(scrollIcon);
 
@@ -1750,21 +1544,36 @@ function applyFocusScroll(config) {
 
         // 키패드 입력 표시 생성
         createKeypadInputDisplay('amount');
-        // 8단계 전용 말풍선 생성 (중앙정렬, 반응형, top +3)
-        const bubble = document.createElement('div');
-        bubble.className = 'speech-bubble arrow-top';
-        bubble.textContent = '1만원을 입력해주세요';
-        bubble.style.position = 'absolute';
-        bubble.style.left = '50%';
-        bubble.style.top = '31%';
-        bubble.style.maxWidth = '98%';
-        bubble.style.display = '-webkit-box';
-        bubble.style.webkitLineClamp = '2';
-        bubble.style.webkitBoxOrient = 'vertical';
-        bubble.style.overflow = 'hidden';
-        bubble.style.animation = 'none';
-        bubble.style.transform = 'translateX(-50%)';
-        contentArea.appendChild(bubble);
+
+        // 가이드 메시지 업데이트 (하단 정렬 후 메시지로 변경)
+        const guideMessageText = guideMessage.querySelector('.guide-message-text');
+        if (guideMessageText && config.instructionAfterScroll) {
+          guideMessageText.textContent = config.instructionAfterScroll;
+        }
+
+        // TTS 재생 (하단 정렬 후 음성으로 변경)
+        if (config.ttsTextAfterScroll && window.ttsEnabled) {
+          // 이전 음성 정지
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
+          // 새로운 TTS 재생
+          const ttsTextCleaned = config.ttsTextAfterScroll.replace(/\n/g, ', ');
+          const utterance = new SpeechSynthesisUtterance(ttsTextCleaned);
+          utterance.lang = 'ko-KR';
+          utterance.rate = 0.7;
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
+          const voices = window.speechSynthesis.getVoices();
+          const koreanVoice = voices.find(v => v.lang.includes('ko'));
+          if (koreanVoice) utterance.voice = koreanVoice;
+          try {
+            window.speechSynthesis.speak(utterance);
+          } catch (error) {
+            console.log('❌ TTS 재생 실패:', error);
+          }
+        }
+
         // 키패드 클릭 활성화 (빨간 박스는 계속 숨김)
         clickAreas.forEach(area => {
           area.style.pointerEvents = 'auto';
@@ -1887,26 +1696,42 @@ function updateClickAreaPositions() {
     element.style.height = `${height}px`;
   });
 
-  // 13단계 말풍선 업데이트 (반응형)
-  if (step13Bubble && currentStep === 13) {
-    const bottomPercent = 17.4615;
-    const topPercent = 100 - bottomPercent; // 82.5385%
+  // 키패드 입력 표시 위치 업데이트 (반응형)
+  if (keypadDisplayElement) {
+    // 단계별 퍼센트 값 설정
+    let leftPercent = 35;
+    let topPercent = 22;
+
+    if (currentStep === 6) {
+      // 6단계
+      leftPercent = 35;
+      topPercent = 25;
+    } else if (currentStep === 8) {
+      // 8단계
+      leftPercent = 30;
+      topPercent = 30;
+    } else if (currentStep === 12) {
+      // 12단계만: left +5 (오른쪽), top +10 (아래로)
+      leftPercent = 40;
+      topPercent = 32;
+    }
+
+    // SVG 이미지 기준으로 픽셀 위치 계산
+    const left = (leftPercent / 100) * imgRect.width + (imgRect.left - containerRect.left);
     const top = (topPercent / 100) * imgRect.height + (imgRect.top - containerRect.top);
 
-    step13Bubble.style.top = `${top}px`;
-    step13Bubble.style.bottom = 'auto';
-    step13Bubble.style.left = '50%';
-    step13Bubble.style.transform = 'translateX(-50%)';
+    // 위치 적용
+    keypadDisplayElement.style.left = `${left}px`;
+    keypadDisplayElement.style.top = `${top}px`;
   }
+
 }
 
 // ===== 클릭 영역 생성 =====
 function createClickAreas(config) {
-  // 기존 클릭 영역, 말풍선, 키패드 입력 표시 제거
+  // 기존 클릭 영역, 키패드 입력 표시 제거
   const existingAreas = contentArea.querySelectorAll('.clickable-area');
   existingAreas.forEach(area => area.remove());
-  const existingBubbles = contentArea.querySelectorAll('.speech-bubble');
-  existingBubbles.forEach(bubble => bubble.remove());
   const existingKeypadDisplay = contentArea.querySelector('.keypad-input-display');
   if (existingKeypadDisplay) existingKeypadDisplay.remove();
 
@@ -1920,18 +1745,18 @@ function createClickAreas(config) {
   config.clickAreas.forEach((area, index) => {
     const clickDiv = document.createElement('div');
     clickDiv.className = 'clickable-area';
-    // 6, 8, 12단계 키패드는 시각적으로 숨김 (동작만 함)
-    if (showHints && !debugMode && !((currentStep === 6 || currentStep === 8 || currentStep === 12) && area.keyValue)) {
+    // 6, 8단계 키패드는 시각적으로 숨김 (동작만 함), 12단계는 표시
+    if (showHints && !debugMode && !((currentStep === 6 || currentStep === 8) && area.keyValue)) {
       clickDiv.classList.add('show-hint');
     }
     // 키패드 버튼이면 클래스 추가
     if (area.keyValue) {
       clickDiv.classList.add('keypad-button');
     }
-    // 12단계 키패드만 완전히 투명하게 숨김
-    if (currentStep === 12 && area.keyValue) {
-      clickDiv.classList.add('keypad-hidden');
-    }
+    // 12단계 키패드만 완전히 투명하게 숨김 (임시로 비활성화)
+    // if (currentStep === 12 && area.keyValue) {
+    //   clickDiv.classList.add('keypad-hidden');
+    // }
     clickDiv.dataset.label = area.label;
     clickDiv.dataset.keyValue = area.keyValue || '';
 
@@ -1949,11 +1774,6 @@ function createClickAreas(config) {
 
     contentArea.appendChild(clickDiv);
     currentClickAreas.push({ element: clickDiv, data: area });
-
-    // 말풍선 생성 (8단계와 10단계는 별도 처리)
-    if (config.instruction && index === 0 && currentStep !== 8 && currentStep !== 10) {
-      createSpeechBubble(area, config.instruction);
-    }
   });
 
   // 키패드 입력 표시 생성 (키패드가 있는 단계에서만)
@@ -2090,172 +1910,9 @@ function createKeypadInputDisplay(keypadType) {
   display.appendChild(label);
   display.appendChild(value);
   contentArea.appendChild(display);
-}
 
-// ===== 말풍선 생성 =====
-function createSpeechBubble(area, text) {
-  // 11단계, 13단계는 초기 말풍선 없음 (순차 또는 지연 생성)
-  if (currentStep === 11 || currentStep === 13) {
-    return;
-  }
-
-  const bubble = document.createElement('div');
-  bubble.className = 'speech-bubble';
-  bubble.textContent = text.replace(/\n/g, ' ');
-
-  // 2단계 특별 처리 (SVG 안에서 반응형, 위치 고정)
-  if (currentStep === 2) {
-    bubble.classList.add('arrow-bottom');
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.top = '16.9389%';
-    bubble.style.left = '35.5%';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translate(-30%, -100%)';
-    contentArea.appendChild(bubble);
-    return;
-  }
-
-  // 4단계 특별 처리 (중앙정렬, 반응형)
-  if (currentStep === 4) {
-    bubble.classList.add('arrow-bottom');
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.bottom = '57%';
-    bubble.style.left = '50%';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-    contentArea.appendChild(bubble);
-    return;
-  }
-
-  // 5단계 특별 처리 (위치 고정, top +6, 최대 넓이)
-  if (currentStep === 5) {
-    bubble.classList.add('arrow-top');
-    bubble.style.top = '26.1067%';
-    bubble.style.left = '48.9567%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-    contentArea.appendChild(bubble);
-    return;
-  }
-
-  // 6단계 특별 처리 (중앙정렬, 최대 넓이, 반응형)
-  if (currentStep === 6) {
-    bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = '55.15%';
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.textAlign = 'center';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-    contentArea.appendChild(bubble);
-    return;
-  }
-
-  // 말풍선 위치 계산
-  const areaTop = parseFloat(area.top);
-  const areaLeft = parseFloat(area.left);
-  const areaWidth = parseFloat(area.width);
-  const areaHeight = parseFloat(area.height);
-
-  // 단계별 특별 처리
-  if (currentStep === 1) {
-    // 1단계: 중앙정렬 + 반응형 + 최대 2줄
-    bubble.classList.add('arrow-top');
-    bubble.style.position = 'absolute';
-    bubble.style.top = `${areaTop + areaHeight + 3}%`;
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.textAlign = 'center';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    // 애니메이션 후에도 중앙정렬 유지
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (currentStep === 3) {
-    // 3단계: 중앙정렬 + 반응형 (2줄 이내)
-    bubble.classList.add('arrow-top');
-    bubble.style.top = `${areaTop + areaHeight + 3}%`;
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (currentStep === 7) {
-    // 7단계: 중앙정렬 + 반응형 + 최대 2줄
-    bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = `${100 - areaTop + 11}%`;
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (currentStep === 9) {
-    // 9단계: 중앙정렬 + 반응형 + 최대 2줄
-    bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = `${100 - areaTop + 3}%`;
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (currentStep === 12) {
-    // 12단계: 중앙정렬 + 최대 넓이 (2줄)
-    bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = `${100 - areaTop + 3}%`;
-    bubble.style.left = '50%';
-    bubble.style.maxWidth = '98%';
-    bubble.style.display = '-webkit-box';
-    bubble.style.webkitLineClamp = '2';
-    bubble.style.webkitBoxOrient = 'vertical';
-    bubble.style.overflow = 'hidden';
-    bubble.style.animation = 'none';
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (areaTop < 30) {
-    // 클릭 영역이 상단에 있음 -> 말풍선을 아래에
-    bubble.classList.add('arrow-top');
-    bubble.style.top = `${areaTop + areaHeight + 3}%`;
-    bubble.style.left = `${areaLeft + areaWidth / 2}%`;
-    bubble.style.transform = 'translateX(-50%)';
-  } else if (areaTop > 70) {
-    // 클릭 영역이 하단에 있음 -> 말풍선을 위에
-    bubble.classList.add('arrow-bottom');
-    bubble.style.bottom = `${100 - areaTop + 3}%`;
-    bubble.style.left = `${areaLeft + areaWidth / 2}%`;
-    bubble.style.transform = 'translateX(-50%)';
-  } else {
-    // 중간에 있으면 위에 배치
-    bubble.classList.add('arrow-bottom');
-    bubble.style.top = `${areaTop - 12}%`;
-    bubble.style.left = `${areaLeft + areaWidth / 2}%`;
-    bubble.style.transform = 'translate(-50%, -100%)';
-  }
-
-  // contentArea에 추가 (transform 영향 받지 않도록)
-  contentArea.appendChild(bubble);
+  // 전역 변수에 저장 (반응형 위치 계산용)
+  keypadDisplayElement = display;
 }
 
 // ===== 클릭 처리 =====
@@ -2341,14 +1998,21 @@ function updateKeypadInputDisplay() {
 
   const config = STEPS_CONFIG[currentStep];
 
+  // 12단계에서는 숫자 간 거리를 2배로
+  if (currentStep === 12) {
+    display.style.letterSpacing = '8px';
+  } else {
+    display.style.letterSpacing = '4px';
+  }
+
   if (keypadInput.length === 0) {
     valueEl.textContent = '-';
   } else if (config.keypad === 'amount') {
     // 금액: 천 단위 콤마
     valueEl.textContent = formatAmount(keypadInput);
   } else if (config.keypad === 'password') {
-    // 비밀번호: 별표
-    valueEl.textContent = '•'.repeat(keypadInput.length);
+    // 비밀번호: 숫자로 표시 (동그라미 아님)
+    valueEl.textContent = keypadInput;
   } else {
     // 계좌번호 등: 그대로 표시
     valueEl.textContent = keypadInput;
