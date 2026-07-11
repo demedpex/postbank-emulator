@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>우체국뱅킹 사용방법 체험</title>
+  <link rel="stylesheet" href="pretendard.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(14px, 5vw, 32px);
+      background: radial-gradient(120% 100% at 50% 0%, #572044 0%, #2f1a3f 46%, #201a2e 100%);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #fffdfb;
+      border-radius: clamp(20px, 5vw, 28px);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .top-bar {
+      height: 6px;
+      background: linear-gradient(90deg, #E8158A 0%, #C8102E 30%, #7A2FC4 70%, #C8158A 100%);
+    }
+
+    .header {
+      padding: clamp(30px, 8vw, 40px) clamp(24px, 7vw, 32px) clamp(24px, 6vw, 30px);
+      text-align: center;
+      background: radial-gradient(120% 140% at 50% 0%, #fcf5f7 0%, #fffdfb 55%);
+    }
+
+    .header .logo {
+      width: clamp(88px, 24vw, 112px);
+      height: auto;
+      margin: 0 auto 18px;
+      display: block;
+      filter: drop-shadow(0 6px 16px rgba(150,30,120,0.18));
+    }
+
+    .header .eyebrow {
+      font-size: clamp(13px, 3.6vw, 14px);
+      font-weight: 500;
+      color: #666;
+      margin: 0 0 6px;
+    }
+
+    .header h1 {
+      font-size: clamp(19px, 5vw, 23px);
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .header h1 span { color: #C8102E; }
+
+    .divider {
+      height: 1px;
+      background: #e8e8e8;
+      margin: 0 clamp(20px, 7vw, 32px);
+    }
+
+    .menu-list {
+      padding: clamp(18px, 5vw, 24px) clamp(14px, 4vw, 20px) 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 4vw, 16px);
+      padding: clamp(15px, 4.5vw, 18px);
+      border-radius: 18px;
+      cursor: pointer;
+      border: 1px solid #efefef;
+      background: #fffdfb;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .menu-item:hover {
+      background: #fcf5f7;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(200,16,46,0.14);
+      border-color: #f5d5dd;
+    }
+
+    .menu-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .menu-item.disabled:hover {
+      background: #fafafa;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .menu-icon {
+      width: clamp(42px, 11vw, 46px);
+      height: clamp(42px, 11vw, 46px);
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .menu-icon.active {
+      background: linear-gradient(135deg, #E8158A 0%, #C8102E 55%, #93081F 100%);
+      box-shadow: 0 6px 14px rgba(200,16,46,0.28);
+    }
+
+    .menu-icon.muted {
+      background: #e8e8e8;
+    }
+
+    .menu-body { flex: 1; }
+    .menu-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .menu-title {
+      font-size: clamp(15px, 4vw, 16px);
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .menu-desc {
+      font-size: clamp(12.5px, 3.4vw, 13px);
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #E8158A 0%, #C8102E 100%);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .badge.soon {
+      font-weight: 600;
+      color: #666;
+      background: #e8e8e8;
+    }
+
+    .chevron {
+      color: #999;
+      margin-left: auto;
+    }
+
+    .footer {
+      padding: clamp(18px, 5vw, 22px) clamp(20px, 7vw, 32px) clamp(24px, 6vw, 30px);
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: clamp(11.5px, 3.2vw, 12px);
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .footer strong {
+      color: #C8102E;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="top-bar"></div>
+
+  <div class="header">
+    <img src="logo.png" alt="우체국뱅킹 로고" class="logo">
+    <p class="eyebrow">알아 두면 편리한</p>
+    <h1><span>우체국뱅킹</span> 사용방법을<br>미리 체험해보세요</h1>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="menu-list">
+    <a href="transfer_20260711_1755.html" class="menu-item">
+      <div class="menu-icon active">💸</div>
+      <div class="menu-body">
+        <div class="menu-row">
+          <span class="menu-title">이체하기</span>
+          <span class="badge">체험 가능</span>
+        </div>
+        <p class="menu-desc">계좌이체 전 과정을 따라하며 체험해보세요</p>
+      </div>
+      <span class="chevron">›</span>
+    </a>
+
+    <div class="menu-item disabled">
+      <div class="menu-icon muted">⚠️</div>
+      <div class="menu-body">
+        <div class="menu-row">
+          <span class="menu-title">사고신고</span>
+          <span class="badge soon">준비중</span>
+        </div>
+        <p class="menu-desc">카드 분실, 도난 등 사고신고 체험</p>
+      </div>
+    </div>
+
+    <div class="menu-item disabled">
+      <div class="menu-icon muted">📱</div>
+      <div class="menu-body">
+        <div class="menu-row">
+          <span class="menu-title">기타 기능</span>
+          <span class="badge soon">준비중</span>
+        </div>
+        <p class="menu-desc">추가 기능이 곧 제공될 예정입니다</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>따라하기 체험화면</strong>으로 실제 거래가 발생하지 않습니다</p>
+  </div>
+</div>
+
+</body>
+</html>

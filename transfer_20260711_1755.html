@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>우체국 스마트뱅킹 체험하기</title>
+<!-- Critical CSS: FOUC 방지 -->
+<style>
+  /* 즉시 적용: 상단 네비 숨김 */
+  .top-nav, #topNav { display: none !important; visibility: hidden !important; }
+</style>
+<!-- Pretendard 폰트 (로컬) -->
+<link rel="stylesheet" href="pretendard.css" />
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background: #f5f5f5;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+
+/* ===== 메인 컨테이너 ===== */
+.phone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: 0 0 40px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+/* ===== 앱 화면 영역 ===== */
+.app-screen {
+  flex: 1;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ===== 상단 네비게이션 바 (완전히 숨김) ===== */
+.top-nav {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* 상단 네비게이션 관련 스타일 제거됨 */
+
+/* ===== 하단 안내 텍스트 ===== */
+.guide-text {
+  background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
+  color: #fff;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.3px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  z-index: 6;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== 하단 네비게이션 바 ===== */
+.bottom-nav {
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  padding: 10px 0 8px;
+  display: flex;
+  justify-content: space-around;
+  flex-shrink: 0;
+  z-index: 5;
+}
+
+.bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  flex: 1;
+  padding: 5px;
+  transition: all 0.2s;
+}
+
+.bottom-nav .nav-icon {
+  width: 26px;
+  height: 26px;
+  color: #999;
+  transition: all 0.2s;
+}
+
+.bottom-nav .nav-label {
+  font-size: 10px;
+  color: #999;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.bottom-nav .nav-item.active .nav-icon,
+.bottom-nav .nav-item.active .nav-label {
+  color: #ef5350;
+}
+
+.bottom-nav .nav-item:hover:not(.active) .nav-icon,
+.bottom-nav .nav-item:hover:not(.active) .nav-label {
+  color: #666;
+}
+
+/* ===== 키패드 입력 표시 (SVG 위 오버레이) ===== */
+.keypad-input-display {
+  position: absolute;
+  transform: translateX(-50%);
+  color: #ef5350;
+  font-size: 32px;
+  font-weight: 700;
+  z-index: 10;
+  text-align: center;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.keypad-input-label {
+  display: none;
+}
+
+/* ===== 컨텐츠 영역 ===== */
+.content-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.svg-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1~5단계: 상단 정렬 */
+.svg-container.align-top {
+  align-items: flex-start;
+}
+
+.svg-container.align-top img {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: top center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 6~13단계: 하단 정렬 */
+.svg-container.align-bottom {
+  align-items: flex-end;
+}
+
+.svg-container.align-bottom img {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 초점이 아래쪽에 있을 때 스크롤 효과 */
+.svg-container.focus-bottom {
+  transform: translateY(-15%);
+}
+
+.svg-container.focus-middle {
+  transform: translateY(-8%);
+}
+
+.svg-container.focus-top {
+  transform: translateY(0);
+}
+
+/* 4단계 전용 - 적당히 위로 올리기 */
+.svg-container.focus-step-4 img {
+  transform: translateY(-10%);
+  transform-origin: top center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 5단계 전용 - 상단 고정 (애니메이션 없음) */
+.svg-container.focus-step-5 {
+  transform: translateY(0);
+}
+
+.svg-container.focus-step-5 img {
+  transform: translateY(0);
+  transform-origin: top center;
+  transition: none !important;
+}
+
+/* 10단계 전용 - 상단 정렬 후 30% 스크롤 */
+.svg-container.focus-step-10 img {
+  transform: translateY(-30%);
+  transform-origin: top center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 13단계 전용 - 초기: 상단 고정 */
+.svg-container.focus-step-13-initial img {
+  transform: translateY(0);
+  transform-origin: top center;
+  transition: none;
+}
+
+/* 13단계 전용 - 2.5초 후: -30% 스크롤 */
+.svg-container.focus-step-13 img {
+  transform: translateY(-30%);
+  transform-origin: top center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1~3단계 전용 - 빠른 전환 */
+.svg-container.focus-step-1,
+.svg-container.focus-step-2,
+.svg-container.focus-step-3 {
+  transition: transform 0.3s ease !important;
+}
+
+.svg-container.focus-step-1 img,
+.svg-container.focus-step-2 img,
+.svg-container.focus-step-3 img {
+  transition: transform 0.3s ease !important;
+}
+
+/* 6단계 전용 - 키패드 기본 위치 (사용 안 함) */
+/* .svg-container.focus-step-6 img {
+  transform: translateY(0);
+  transform-origin: top center;
+} */
+
+/* 7단계 전용 - 상단 고정 */
+.svg-container.focus-step-7 {
+  transform: translateY(0);
+}
+
+/* 8단계 전용 - align 전환 부드럽게 */
+.svg-container img {
+  transition: all 3s ease-in-out;
+}
+
+.svg-container.align-top,
+.svg-container.align-bottom {
+  transition: all 3s ease-in-out;
+}
+
+/* 8단계 화살표 애니메이션 */
+.step8-arrow {
+  position: absolute;
+  left: 10%;
+  top: 18%;
+  font-size: 60px;
+  color: #ef5350;
+  z-index: 10;
+  animation: bounce-tap 0.8s ease-in-out infinite;
+  pointer-events: none;
+  text-shadow: 0 4px 12px rgba(200, 16, 46, 0.4);
+  filter: drop-shadow(0 0 8px rgba(200, 16, 46, 0.6));
+}
+
+@keyframes bounce-tap {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(8px) scale(0.95);
+  }
+}
+
+/* 8단계 강조 박스 */
+.step8-highlight {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  width: 85%;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 3px dashed #ef5350;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(200, 16, 46, 0.3);
+  z-index: 9;
+  animation: pulse-box 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-box {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.03);
+  }
+}
+
+/* ===== 클릭 가능 영역 (핫스팟) ===== */
+.clickable-area {
+  position: absolute;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.2s;
+}
+
+.clickable-area:active {
+  transform: scale(0.98);
+}
+
+/* 펄스 애니메이션 */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 83, 80, 0);
+  }
+}
+
+.clickable-area.show-hint {
+  background-color: rgba(239, 83, 80, 0.12);
+  border: 2px solid rgba(239, 83, 80, 0.5);
+  border-radius: 8px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* 12단계 클릭 영역 숨기기 (동작은 유지) */
+.step-12 .clickable-area.show-hint {
+  background-color: transparent !important;
+  border: none !important;
+  animation: none !important;
+}
+
+/* ===== 에디터 모드 ===== */
+.edit-mode .clickable-area {
+  cursor: move !important;
+  background-color: rgba(39, 174, 96, 0.2) !important;
+  border: 3px solid #27ae60 !important;
+  box-shadow: 0 0 15px rgba(39, 174, 96, 0.5) !important;
+  animation: none !important;
+  transition: none !important;
+  position: absolute !important;
+  pointer-events: auto !important;
+}
+
+.edit-mode .clickable-area:hover {
+  background-color: rgba(39, 174, 96, 0.3) !important;
+  border-color: #2ecc71 !important;
+}
+
+.edit-mode .clickable-area.dragging {
+  opacity: 0.8;
+  z-index: 1000 !important;
+}
+
+/* 리사이즈 핸들 */
+.resize-handle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #27ae60;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 10;
+  display: none;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.edit-mode .clickable-area .resize-handle {
+  display: block;
+}
+
+.resize-handle.nw { top: -8px; left: -8px; cursor: nw-resize; }
+.resize-handle.ne { top: -8px; right: -8px; cursor: ne-resize; }
+.resize-handle.sw { bottom: -8px; left: -8px; cursor: sw-resize; }
+.resize-handle.se { bottom: -8px; right: -8px; cursor: se-resize; }
+
+/* 좌표 표시 툴팁 */
+.coord-tooltip {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.edit-mode .clickable-area .coord-tooltip {
+  display: block;
+}
+
+.coord-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* ===== 스크롤 다운 아이콘 ===== */
+.scroll-down-icon {
+  position: absolute;
+  left: 50%;
+  top: 80%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease;
+}
+
+.scroll-down-icon:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.swipe-finger {
+  font-size: 48px;
+  animation: swipe-down 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(200, 16, 46, 0.3));
+}
+
+.scroll-down-icon svg {
+  color: #ef5350;
+  filter: drop-shadow(0 4px 12px rgba(200, 16, 46, 0.4));
+  margin-top: -10px;
+}
+
+.scroll-down-icon p {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ef5350;
+  text-shadow: 0 2px 8px rgba(200, 16, 46, 0.3);
+  letter-spacing: -0.3px;
+}
+
+@keyframes swipe-down {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0.3;
+  }
+}
+
+/* ===== 강조 영역 (Highlight Area) ===== */
+.highlight-area {
+  position: absolute;
+  border: 3px solid #27ae60;
+  background-color: rgba(39, 174, 96, 0.08);
+  border-radius: 12px;
+  z-index: 5;
+  animation: highlight-glow 2s ease-in-out infinite;
+}
+
+/* 일반 모드에서만 pointer-events: none */
+body:not(.debug-mode) .highlight-area {
+  pointer-events: none;
+}
+
+@keyframes highlight-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.6),
+                0 0 20px rgba(39, 174, 96, 0.3);
+    border-color: #27ae60;
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(39, 174, 96, 0),
+                0 0 30px rgba(39, 174, 96, 0.5);
+    border-color: #2ecc71;
+  }
+}
+
+
+/* 키패드 버튼 애니메이션 제거 */
+.clickable-area.keypad-button {
+  animation: none !important;
+  transition: none !important;
+}
+
+.clickable-area.keypad-button:active {
+  transform: none !important;
+}
+
+/* 12단계 키패드 숨김 (동작은 유지) */
+body .clickable-area.keypad-hidden {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+/* ===== 안내 메시지 ===== */
+.guide-message {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 30%);
+  color: #fff;
+  padding: 30px 20px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  line-height: 1.6;
+  z-index: 10;
+  letter-spacing: -0.2px;
+  font-weight: 500;
+}
+
+.guide-message-text {
+  flex: 1;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.tts-toggle-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.tts-toggle-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.tts-toggle-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+/* ===== 진행 표시 ===== */
+.progress-indicator {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(239, 83, 80, 0.95);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 17px;
+  font-weight: 700;
+  z-index: 20;
+  box-shadow: 0 3px 15px rgba(239, 83, 80, 0.4);
+  letter-spacing: 0.5px;
+}
+
+/* ===== 홈 버튼 (처음으로) ===== */
+.home-button {
+  position: absolute;
+  top: 12px;
+  right: 62px;
+  background: rgba(239, 83, 80, 0.95);
+  color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 3px 15px rgba(239, 83, 80, 0.4);
+  transition: all 0.2s;
+}
+
+.home-button:hover {
+  background: rgba(239, 83, 80, 1);
+  transform: scale(1.05);
+}
+
+.home-button:active {
+  transform: scale(0.95);
+}
+
+.home-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== 가이드 메시지 크기 조절 버튼 ===== */
+.guide-size-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(200, 16, 46, 0.95);
+  color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 3px 15px rgba(200, 16, 46, 0.4);
+  transition: all 0.2s;
+}
+
+.guide-size-toggle:hover {
+  background: rgba(200, 16, 46, 1);
+  transform: scale(1.05);
+}
+
+.guide-size-toggle:active {
+  transform: scale(0.95);
+}
+
+.guide-size-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 가이드 메시지 크기 단계 */
+.guide-message.size-small {
+  font-size: 18px;
+}
+
+.guide-message.size-medium {
+  font-size: 22px;
+}
+
+.guide-message.size-large {
+  font-size: 26px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .guide-message.size-small {
+    font-size: 17px;
+  }
+
+  .guide-message.size-medium {
+    font-size: 21px;
+  }
+
+  .guide-message.size-large {
+    font-size: 25px;
+  }
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .phone-frame {
+    max-width: 100%;
+    box-shadow: none;
+  }
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  .phone-frame {
+    width: 100%;
+  }
+
+  /* 작은 폰트 조정 */
+  .guide-message {
+    padding: 12px 15px;
+  }
+}
+
+/* ===== 토스트 메시지 ===== */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 32px 48px;
+  border-radius: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  min-width: 300px;
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* 성공 토스트 */
+.toast.success {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 실패 토스트 */
+.toast.error {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ===== 완료 애니메이션 ===== */
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.completion-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.completion-overlay.show {
+  display: flex;
+}
+
+.completion-content {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 320px;
+}
+
+.completion-content h2 {
+  color: #ef5350;
+  margin: 20px 0 10px;
+  font-size: 24px;
+}
+
+.completion-content p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.completion-content button {
+  background: #ef5350;
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.completion-content button:hover {
+  background: #e53935;
+}
+
+/* ===== 배포용: 디버그 패널 숨기기 ===== */
+.control-panel {
+  display: none !important;
+}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="app-screen">
+    <!-- 진행 표시 -->
+    <div class="progress-indicator" id="progressIndicator">1 / 13</div>
+
+    <!-- 홈 버튼 (처음으로) -->
+    <div class="home-button" onclick="goToMenu()" title="처음으로">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    </div>
+
+    <!-- 가이드 메시지 크기 조절 버튼 -->
+    <div class="guide-size-toggle" id="guideSizeToggle">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"/>
+      </svg>
+    </div>
+
+    <!-- 상단 네비게이션 바 (완전히 제거됨) -->
+
+    <!-- 컨텐츠 영역 -->
+    <div class="content-area" id="contentArea">
+      <div class="svg-container align-top" id="svgContainer">
+        <img id="stepImage" src="1.svg" alt="Step 1">
+      </div>
+
+      <!-- 클릭 가능 영역들이 동적으로 추가됩니다 -->
+    </div>
+
+    <!-- 하단 네비게이션 바 -->
+    <div class="bottom-nav" id="bottomNav" style="display: none;">
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span class="nav-label">홈</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+        <span class="nav-label">메뉴</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <span class="nav-label">MY</span>
+      </div>
+    </div>
+
+    <!-- 안내 메시지 -->
+    <div class="guide-message" id="guideMessage">
+      <span class="guide-message-text">따라하기 체험화면으로 실제 이체가 아니에요</span>
+      <div class="tts-toggle-icon" id="ttsToggleIcon" onclick="toggleTTS()">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 컨트롤 패널 (데스크톱) -->
+<div class="control-panel">
+  <button id="debugToggle">디버그 모드 OFF</button>
+  <button id="hintToggle">힌트 표시</button>
+  <div class="current-step" id="currentStepDisplay">Step 1 / 13</div>
+  <div class="step-controls">
+    <button id="prevStep">◀</button>
+    <button id="nextStep">▶</button>
+  </div>
+  <button id="resetBtn">처음으로</button>
+</div>
+
+<!-- 토스트 메시지 -->
+<div class="toast" id="toast"></div>
+
+<!-- 완료 오버레이 -->
+<div class="completion-overlay" id="completionOverlay">
+  <div class="completion-content">
+    <svg width="80" height="80" viewBox="0 0 52 52" style="margin: 0 auto;">
+      <circle cx="26" cy="26" r="25" fill="none" stroke="#27ae60" stroke-width="2"/>
+      <path fill="none" stroke="#27ae60" stroke-width="3" stroke-linecap="round"
+            d="M14 27 l7 7 l16 -16"
+            stroke-dasharray="100"
+            stroke-dashoffset="100"
+            style="animation: checkmark 0.8s ease-in-out forwards;"/>
+    </svg>
+    <h2>체험 완료!</h2>
+    <p>우체국 스마트뱅킹 이체 과정을<br>성공적으로 완료하셨습니다</p>
+    <button id="restartBtn">처음부터 다시하기</button>
+  </div>
+</div>
+
+<script>
+// ===== 배포용: 콘솔 비활성화 =====
+(function() {
+  const noop = function() {};
+  const methods = ['log', 'debug', 'info', 'warn', 'error', 'table', 'trace', 'assert'];
+  methods.forEach(method => {
+    console[method] = noop;
+  });
+})();
+
+// ===== 전역 변수 =====
+const CACHE_VERSION = '1783759697'; // 캐시 버스팅용 버전 (업데이트 시 변경)
+let currentStep = 1;
+let debugMode = false;
+let showHints = true;
+const totalSteps = 13;
+let keypadInput = '';
+let keypadType = null;
+let currentClickAreas = [];
+let currentHighlightAreas = [];
+let stepTimeout = null; // 8단계 애니메이션 타이머
+let guideSizeLevel = 1; // 가이드 메시지 크기: 0(작음), 1(중간), 2(크게)
+let keypadDisplayElement = null; // 키패드 입력 표시 요소
+let currentAudio = null; // 현재 재생 중인 오디오
+
+// ===== TTS 설정 =====
+window.ttsEnabled = true;
+
+// ===== DOM 요소 =====
+const svgContainer = document.getElementById('svgContainer');
+const stepImage = document.getElementById('stepImage');
+const contentArea = document.getElementById('contentArea');
+const bottomNav = document.getElementById('bottomNav');
+const guideMessage = document.getElementById('guideMessage');
+const progressIndicator = document.getElementById('progressIndicator');
+const guideSizeToggle = document.getElementById('guideSizeToggle');
+const debugToggle = document.getElementById('debugToggle');
+const hintToggle = document.getElementById('hintToggle');
+const prevStepBtn = document.getElementById('prevStep');
+const nextStepBtn = document.getElementById('nextStep');
+const resetBtn = document.getElementById('resetBtn');
+const currentStepDisplay = document.getElementById('currentStepDisplay');
+const toast = document.getElementById('toast');
+const completionOverlay = document.getElementById('completionOverlay');
+const restartBtn = document.getElementById('restartBtn');
+
+// ===== 단계별 설정 =====
+const STEPS_CONFIG = {
+  1: {
+    showTopNav: false,
+    showBottomNav: false,
+    align: 'top',
+    instruction: '간편홈 버튼을 눌러 ON으로 전환하세요',
+    ttsText: '간편홈 이체를 시작할게요. 왼쪽 상단 간편홈 버튼을 눌러 시작해주세요.',
+    audioFile: 'step01.mp3',
+    clickAreas: [
+      {
+        label: '간편홈 전환',
+        left: 3.1,
+        top: 0.9,
+        width: 31,
+        height: 6
+      }
+    ]
+  },
+  2: {
+    showTopNav: false,
+    showBottomNav: false,
+    align: 'top',
+    instruction: '이체하기 버튼을 눌러주세요',
+    ttsText: '간편홈 화면으로 전환됐습니다. 이체하기 버튼을 눌러주세요.',
+    audioFile: 'step02.mp3',
+    clickAreas: [
+      {
+        label: '이체하기',
+        left: 49.18,
+        top: 32.5,
+        width: 43,
+        height: 8
+      }
+    ]
+  },
+  3: {
+    showTopNav: false,
+    showBottomNav: false,
+    align: 'top',
+    instruction: '이체하실 대상을 선택해주세요.',
+    ttsText: '계좌번호를 직접 입력하시거나, 최근에 이체하신 대상에게 보내시는 경우 하단에 이체대상을 눌러주세요.',
+    audioFile: 'step03.mp3',
+    clickAreas: [
+      { label: '계좌번호입력', left: 1.66, top: 16, width: 94.8, height: 8, jumpToStep: 4 },
+      { label: '최근이체대상', left: 2.29, top: 41, width: 94, height: 11, jumpToStep: 8 }
+    ]
+  },
+  4: {
+    showTopNav: false,
+    showBottomNav: false,
+    align: 'top',
+    instruction: '이체하실 은행을 선택해주세요.',
+    ttsText: '보내실 계좌의 은행을 선택할게요. 체험을 위해 임의로 신한은행을 선택하겠습니다.',
+    audioFile: 'step04.mp3',
+    clickAreas: [
+      { label: '은행선택', left: 51.25, top: 62, width: 44, height: 9 }
+    ]
+  },
+  5: {
+    showTopNav: false,
+    showBottomNav: false,
+    align: 'top',
+    instruction: '계좌번호 입력 화면을 눌러주세요.',
+    ttsText: '이체하실 대상의 계좌번호를 입력하겠습니다. 먼저, 계좌번호 입력 화면을 눌러주세요.',
+    audioFile: 'step05.mp3',
+    clickAreas: [
+      { label: '계좌번호입력', left: 1.87, top: 22, width: 94.17, height: 8.5 }
+    ]
+  },
+  6: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'bottom',
+    instruction: '계좌번호 [123456789]를 눌러주세요.',
+    ttsText: '체험을 위해, 계좌번호 일, 이, 삼, 사, 오, 육, 칠, 팔, 구, 번호를 차례대로 눌러주세요.',
+    audioFile: 'step06.mp3',
+    keypad: 'account',
+    targetValue: '123456789',
+    clickAreas: [
+      // 숫자 키패드
+      { label: '1', left: 1.46, top: 62, width: 23.83, height: 9, keyValue: '1' },
+      { label: '2', left: 26.25, top: 62, width: 23, height: 9, keyValue: '2' },
+      { label: '3', left: 50.42, top: 62, width: 23.42, height: 9, keyValue: '3' },
+      { label: '4', left: 1.67, top: 71, width: 23.63, height: 9, keyValue: '4' },
+      { label: '5', left: 26.04, top: 71, width: 23.83, height: 9, keyValue: '5' },
+      { label: '6', left: 50.42, top: 71, width: 23.63, height: 9, keyValue: '6' },
+      { label: '7', left: 1.67, top: 80, width: 23.63, height: 9, keyValue: '7' },
+      { label: '8', left: 26.25, top: 80, width: 23.63, height: 9, keyValue: '8' },
+      { label: '9', left: 50.63, top: 80, width: 23.42, height: 9, keyValue: '9' },
+      { label: '0', left: 26.67, top: 89, width: 22.58, height: 9, keyValue: '0' },
+      // 지우기 버튼
+      { label: '지우기', left: 74.58, top: 62, width: 23.75, height: 9, keyValue: 'delete' }
+    ]
+  },
+  7: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'top',
+    instruction: '계좌번호 확인 후 다음을 눌러주세요.',
+    ttsText: '이체 대상의 계좌번호를 입력완료하셨으면, 다음버튼을 눌러주세요.',
+    audioFile: 'step07.mp3',
+    clickAreas: [
+      { label: '다음', left: 1.87333, top: 77, width: 95, height: 16.5 }
+    ]
+  },
+  8: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'bottom',
+    instruction: '보내실 이체 대상을 다시한번 확인해주세요.',
+    instructionAfterScroll: '보내실 이체 금액 1만원을 입력해주세요.',
+    ttsText: '화면의 보내실 이체 대상을 확인해주시고 아래 하단의 버튼을 클릭해주세요.',
+    ttsTextAfterScroll: '원하시는 이체 금액을 입력해주세요. 체험을 위해, 1만원 또는 일, 영, 영, 영, 영을 입력해주세요.',
+    audioFile: 'step08.mp3',
+    audioFileAfterScroll: 'step08_2.mp3',
+    keypad: 'amount',
+    targetValue: '10000',
+    clickAreas: [
+      // 금액 버튼
+      { label: '1만원', left: 3.75, top: 48, width: 18.54, height: 6.9, keyValue: '10000' },
+      { label: '5만원', left: 22.5, top: 48, width: 18.54, height: 6.9, keyValue: '50000' },
+      // 숫자 키패드
+      { label: '1', left: 3.54, top: 56, width: 28.21, height: 6.7, keyValue: '1' },
+      { label: '2', left: 37.08, top: 56, width: 26.54, height: 6.7, keyValue: '2' },
+      { label: '3', left: 65.63, top: 56, width: 31.96, height: 6.7, keyValue: '3' },
+      { label: '4', left: 2.92, top: 64, width: 30.29, height: 6.7, keyValue: '4' },
+      { label: '5', left: 36.67, top: 64, width: 28, height: 6.7, keyValue: '5' },
+      { label: '6', left: 66.25, top: 64, width: 31.96, height: 6.7, keyValue: '6' },
+      { label: '7', left: 2.5, top: 72, width: 30.92, height: 6.7, keyValue: '7' },
+      { label: '8', left: 36.04, top: 72, width: 28.83, height: 6.7, keyValue: '8' },
+      { label: '9', left: 66.04, top: 72, width: 32.38, height: 6.7, keyValue: '9' },
+      // 추가 키
+      { label: '00', left: 2.5, top: 80, width: 30, height: 6.7, keyValue: '00' },
+      { label: '0', left: 35.63, top: 80, width: 29.04, height: 6.7, keyValue: '0' },
+      { label: '지우기', left: 66.04, top: 80, width: 32.92, height: 6.7, keyValue: 'delete' }
+    ]
+  },
+  9: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'bottom',
+    instruction: '보내실 금액을 확인 후 다음버튼을 눌러주세요.',
+    ttsText: '보내실 금액을 입력하셨으면, 다음 버튼을 눌러주세요.',
+    audioFile: 'step09.mp3',
+    clickAreas: [
+      { label: '다음', left: 2.29167, top: 88.5, width: 95.2084, height: 11 }
+    ]
+  },
+  10: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'top', // 4단계처럼 상단 정렬
+    instruction: '이체 통장표기를 확인해주세요.',
+    ttsText: '받으실 대상 그리고 내 통장에 표시 될 표기 내용을 확인하시고, 다음버튼을 눌러주세요.',
+    audioFile: 'step10.mp3',
+    clickAreas: [
+      { label: '다음', left: 2.5, top: 88, width: 94.375, height: 11 }
+    ],
+    highlightAreas: [
+      // 통장표기 영역
+      { label: '통장표기', left: 2, top: 40, width: 95, height: 29.33 }
+    ]
+  },
+  11: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'top', // 상단 정렬
+    instruction: '이체 내용을 다시한번 확인해주세요.',
+    ttsText: '마지막으로, 보내실 대상과 금액을 확인하시고, 다음버튼을 눌러주세요.',
+    audioFile: 'step11.mp3',
+    clickAreas: [
+      { label: '다음', left: 2.08333, top: 82, width: 95.2083, height: 15 }
+    ],
+    highlightAreas: [
+      { label: '강조영역', left: 2, top: 24, width: 95, height: 20 }
+    ]
+  },
+  12: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'bottom',
+    instruction: '비밀번호 [123456]을 눌러주세요.',
+    ttsText: '인증을 진행하겠습니다. 체험을 위해, 비밀번호 일, 이, 삼, 사, 오, 육을 눌러주세요.',
+    audioFile: 'step12.mp3',
+    keypad: 'password',
+    targetValue: '123456',
+    clickAreas: [
+      // 숫자 키패드
+      { label: '1', left: 0.625, top: 71.6, width: 24.0417, height: 6.33, keyValue: '1' },
+      { label: '2', left: 50, top: 71.6, width: 24.6667, height: 6.33, keyValue: '2' },
+      { label: '3', left: 75.5417, top: 71.6, width: 24.4583, height: 6.33, keyValue: '3' },
+      { label: '4', left: 0.416667, top: 78.43, width: 24.0417, height: 6.33, keyValue: '4' },
+      { label: '5', left: 25.4167, top: 78.43, width: 24.875, height: 6.33, keyValue: '5' },
+      { label: '6', left: 75.625, top: 78.43, width: 24.0417, height: 6.33, keyValue: '6' },
+      { label: '7', left: 0.208333, top: 85.26, width: 24.0417, height: 6.33, keyValue: '7' },
+      { label: '8', left: 25.2083, top: 85.26, width: 25.0833, height: 6.33, keyValue: '8' },
+      { label: '9', left: 51.0417, top: 85.26, width: 22.7917, height: 6.33, keyValue: '9' },
+      { label: '0', left: 74.9167, top: 85.26, width: 24.6667, height: 6.33, keyValue: '0' },
+      { label: '지우기', left: 0.416667, top: 92.09, width: 24.6667, height: 6.33, keyValue: 'delete' }
+    ]
+  },
+  13: {
+    showTopNav: false,
+    showBottomNav: true,
+    align: 'top', // 상단 정렬 (4단계처럼)
+    instruction: '이체가 완료되었습니다.',
+    ttsText: '이체가 완료되었습니다. 이체내용을 확인하시고 체험을 종료하시려면, 확인버튼을 눌러주세요.',
+    audioFile: 'step13.mp3',
+    clickAreas: [
+      { label: '홈으로', left: 49.5833, top: 87, width: 47.5, height: 11, goToMenu: true }
+    ],
+    isLastStep: true
+  }
+};
+
+// ===== 초기화 =====
+function init() {
+  // 이벤트 리스너
+  if (debugToggle) {
+    debugToggle.addEventListener('click', () => {
+      debugMode = !debugMode;
+      document.body.classList.toggle('debug-mode', debugMode);
+      if (debugToggle) debugToggle.textContent = debugMode ? '디버그 모드 ON' : '디버그 모드 OFF';
+    });
+  }
+
+  if (hintToggle) {
+    hintToggle.addEventListener('click', () => {
+      showHints = !showHints;
+      if (hintToggle) hintToggle.textContent = showHints ? '힌트 숨기기' : '힌트 표시';
+    });
+  }
+
+  if (prevStepBtn) {
+    prevStepBtn.addEventListener('click', () => goToStep(currentStep - 1));
+  }
+
+  if (nextStepBtn) {
+    nextStepBtn.addEventListener('click', () => goToStep(currentStep + 1));
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => goToStep(1));
+  }
+
+  // 가이드 메시지 크기 조절 버튼
+  if (guideSizeToggle) {
+    guideSizeToggle.addEventListener('click', () => {
+      // 크기 레벨 순환: 0(작음) → 1(중간) → 2(크게) → 0(작음)
+      guideSizeLevel = (guideSizeLevel + 1) % 3;
+
+      // 기존 크기 클래스 제거
+      guideMessage.classList.remove('size-small', 'size-medium', 'size-large');
+
+      // 새로운 크기 클래스 추가
+      if (guideSizeLevel === 0) {
+        guideMessage.classList.add('size-small');
+      } else if (guideSizeLevel === 1) {
+        guideMessage.classList.add('size-medium');
+      } else {
+        guideMessage.classList.add('size-large');
+      }
+
+      // 버튼에 피드백 효과
+      guideSizeToggle.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        guideSizeToggle.style.transform = '';
+      }, 200);
+    });
+  }
+
+  restartBtn.addEventListener('click', () => {
+    completionOverlay.classList.remove('show');
+    goToStep(1);
+  });
+
+  // 동적 좌표 계산 활성화 - 반응형 대응
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    if (editMode) return; // 에디터 모드에서는 비활성화
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      updateClickAreaPositions();
+    }, 100);
+  });
+
+  // 이미지 크기 변화 감지 (초기 로드 시 좌표 자동 업데이트)
+  let imageResizeTimeout;
+  const imageResizeObserver = new ResizeObserver((entries) => {
+    if (editMode) return;
+    clearTimeout(imageResizeTimeout);
+    imageResizeTimeout = setTimeout(() => {
+      if (currentClickAreas.length > 0 || currentHighlightAreas.length > 0) {
+        updateClickAreaPositions();
+      }
+    }, 50);
+  });
+  imageResizeObserver.observe(stepImage);
+
+  window.addEventListener('orientationchange', () => {
+    if (editMode) return; // 에디터 모드에서는 비활성화
+    setTimeout(() => {
+      updateClickAreaPositions();
+    }, 300);
+  });
+
+  // 가이드 메시지 초기 크기 설정 (중간)
+  guideMessage.classList.add('size-medium');
+
+  // 첫 화면 로드
+  loadStep(1);
+}
+
+// ===== 단계 로드 =====
+function loadStep(stepNumber) {
+  if (stepNumber < 1 || stepNumber > totalSteps) return;
+
+  const config = STEPS_CONFIG[stepNumber];
+  if (!config) {
+    return;
+  }
+
+  // ===== TTS 재생 =====
+  if (config.ttsText && window.ttsEnabled) {
+    playTTS(stepNumber);
+  }
+
+  // ===== 모든 애니메이션 및 상태 초기화 =====
+  // 진행 중인 타이머 취소 (8단계 애니메이션 등)
+  if (stepTimeout) {
+    clearTimeout(stepTimeout);
+    stepTimeout = null;
+  }
+
+  // transform 초기화 (inline style 제거하여 CSS 적용 가능하게)
+  svgContainer.style.removeProperty('transform');
+
+  // 스크롤 아이콘 제거 (8단계용)
+  const scrollIcon = contentArea.querySelector('.scroll-down-icon');
+  if (scrollIcon) scrollIcon.remove();
+
+  // 키패드 입력 표시 제거
+  const keypadDisplay = contentArea.querySelector('.keypad-input-display');
+  if (keypadDisplay) {
+    keypadDisplay.remove();
+    keypadDisplayElement = null; // 전역 변수 초기화
+  }
+
+  // align 즉시 설정 (스크롤 문제 방지)
+  if (stepNumber === 8) {
+    svgContainer.className = 'svg-container align-top';
+  } else {
+    svgContainer.className = `svg-container align-${config.align}`;
+  }
+
+  currentStep = stepNumber;
+  keypadInput = '';
+  keypadType = config.keypad || null;
+
+  // 단계별 클래스 추가 (12단계 좌표 숨기기용)
+  contentArea.className = 'content-area';
+  if (stepNumber === 12) {
+    contentArea.classList.add('step-12');
+  }
+
+  // 진행 표시 업데이트
+  progressIndicator.textContent = `${currentStep} / ${totalSteps}`;
+  if (currentStepDisplay) {
+    currentStepDisplay.textContent = `Step ${currentStep} / ${totalSteps}`;
+  }
+
+  // 네비게이션 바 표시/숨김
+  bottomNav.style.display = config.showBottomNav ? 'flex' : 'none';
+
+  // SVG 이미지 로드 (캐시 버스팅 적용)
+  const newSrc = stepNumber === 6 ? '6-1.svg' : stepNumber === 7 ? '7-1.svg' : stepNumber === 11 ? '11_2.svg' : stepNumber === 13 ? '13_2.svg' : `${stepNumber}.svg`;
+  const newSrcWithVersion = `${newSrc}?v=${CACHE_VERSION}`;
+  const needsLoad = stepImage.src !== new URL(newSrcWithVersion, window.location.href).href;
+
+  stepImage.src = newSrcWithVersion;
+  stepImage.alt = `Step ${stepNumber}`;
+
+  // 안내 메시지 업데이트 (instruction 우선, 없으면 ttsText)
+  const guideMessageText = guideMessage.querySelector('.guide-message-text');
+  if (guideMessageText) {
+    guideMessageText.textContent = config.instruction || config.ttsText;
+  }
+
+  // SVG 로드 완료 후 UI 생성
+  const initStepUI = () => {
+    // 초점 위치에 따른 스크롤 효과 적용 (클릭 영역보다 먼저!)
+    applyFocusScroll(config);
+
+    // 스크롤 효과 적용 후 약간의 지연 (transform 완료 대기)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // 강조 영역 생성
+        createHighlightAreas(config);
+
+        // 클릭 영역 생성
+        createClickAreas(config);
+
+        // 초기 렌더링 완료 후 좌표 재계산 (여러 번 시도로 확실하게)
+        // 즉시 한 번 실행
+        updateClickAreaPositions();
+
+        // 추가 재시도
+        [100, 300, 500, 700, 1000].forEach(delay => {
+          setTimeout(() => {
+            if (!editMode && (currentClickAreas.length > 0 || currentHighlightAreas.length > 0)) {
+              updateClickAreaPositions();
+            }
+          }, delay);
+        });
+      });
+    });
+  };
+
+  if (needsLoad && !stepImage.complete) {
+    stepImage.addEventListener('load', initStepUI, { once: true });
+  } else {
+    // 이미 로드된 경우 약간 더 긴 지연 (렌더링 완료 보장)
+    setTimeout(initStepUI, 150);
+  }
+
+  // 자동 다음 단계
+  if (config.autoNext) {
+    setTimeout(() => {
+      nextStep();
+    }, config.autoNext);
+  }
+
+  // 버튼 상태 업데이트
+  if (prevStepBtn) {
+    prevStepBtn.disabled = currentStep === 1;
+  }
+  if (nextStepBtn) {
+    nextStepBtn.disabled = currentStep === totalSteps;
+  }
+}
+
+// ===== 초점 위치에 따른 스크롤 효과 =====
+function applyFocusScroll(config) {
+  // 초점 클래스 제거
+  svgContainer.classList.remove('focus-top', 'focus-middle', 'focus-bottom', 'focus-step-1', 'focus-step-2', 'focus-step-3', 'focus-step-4', 'focus-step-5', 'focus-step-6', 'focus-step-7', 'focus-step-8-initial', 'focus-step-8-scrolled', 'focus-step-10');
+
+  // 1~3단계는 빠른 전환
+  if (currentStep >= 1 && currentStep <= 3) {
+    svgContainer.classList.add(`focus-step-${currentStep}`);
+  }
+
+  // 2단계 특별 처리 - 살짝 내려오는 효과 강제 적용
+  if (currentStep === 2) {
+    svgContainer.classList.add('focus-middle');
+    return;
+  }
+
+  // 4단계는 특별 처리 (위로 올리기)
+  if (currentStep === 4) {
+    svgContainer.classList.add('focus-step-4');
+    return;
+  }
+
+  // 5단계는 상단 고정
+  if (currentStep === 5) {
+    svgContainer.classList.add('focus-step-5');
+    return;
+  }
+
+  // 6단계는 스크롤 없이 하단 정렬만
+  if (currentStep === 6) {
+    // align-bottom만 적용, 추가 스크롤 없음
+    return;
+  }
+
+  // 7단계는 스크롤 없음 (하단 정렬만)
+  if (currentStep === 7) {
+    // align-bottom만 적용, 추가 스크롤 없음
+    return;
+  }
+
+  // 9단계는 스크롤 없이 하단 정렬만
+  if (currentStep === 9) {
+    // align-bottom만 적용, 추가 스크롤 없음
+    return;
+  }
+
+  // 10단계는 4단계처럼 위로 스크롤
+  if (currentStep === 10) {
+    svgContainer.classList.add('focus-step-10');
+    return;
+  }
+
+  // 11단계는 스크롤 없음 (상단 정렬)
+  if (currentStep === 11) {
+    return;
+  }
+
+  // 12단계는 스크롤 없음 (하단 정렬)
+  if (currentStep === 12) {
+    // align-bottom만 적용, 추가 스크롤 없음
+    return;
+  }
+
+  // 13단계는 상단 고정 → 4초 후 스크롤 → 스크롤 완료 후 빨간 박스 표시
+  if (currentStep === 13) {
+    // 초기: 상단 고정
+    svgContainer.classList.add('focus-step-13-initial');
+
+    // 클릭 영역이 생성된 후 숨기기 (약간의 지연)
+    setTimeout(() => {
+      const clickAreas = contentArea.querySelectorAll('.clickable-area');
+      clickAreas.forEach(area => {
+        area.style.pointerEvents = 'none';
+        area.style.opacity = '0';
+      });
+    }, 100);
+
+    // 2.5초 후: 스크롤 시작
+    stepTimeout = setTimeout(() => {
+      if (currentStep === 13) {
+        // 스크롤
+        svgContainer.classList.remove('focus-step-13-initial');
+        svgContainer.classList.add('focus-step-13');
+
+        // 스크롤 완료 후 (0.6초) 빨간 박스 표시
+        setTimeout(() => {
+          if (currentStep === 13) {
+            const clickAreas = contentArea.querySelectorAll('.clickable-area');
+
+            // 빨간 박스 표시
+            clickAreas.forEach(area => {
+              area.style.pointerEvents = 'auto';
+              area.style.opacity = '1';
+              area.style.transition = 'opacity 0.3s ease';
+            });
+
+            // 스크롤 완료 후 좌표 재계산 (초기 vs 반응형 좌표 문제 해결)
+            setTimeout(() => {
+              updateClickAreaPositions();
+            }, 100);
+          }
+        }, 600); // 스크롤 애니메이션 완료 대기
+      }
+    }, 2500);
+
+    return;
+  }
+
+  // 8단계는 상단 정렬 → 스크롤 아이콘 클릭 시 하단 정렬로 전환
+  if (currentStep === 8) {
+    // 키패드 클릭 비활성화 및 숨김 (동작은 유지)
+    const clickAreas = contentArea.querySelectorAll('.clickable-area');
+    clickAreas.forEach(area => {
+      area.style.pointerEvents = 'none';
+      area.style.opacity = '0';
+    });
+
+    // 8단계 초기 로드 시 좌표 재계산 (초기 vs 반응형 좌표 문제 해결)
+    setTimeout(() => {
+      updateClickAreaPositions();
+    }, 1200);
+    setTimeout(() => {
+      updateClickAreaPositions();
+    }, 1500);
+
+    // 스크롤 아이콘 생성 (손가락 스와이프 애니메이션)
+    const scrollIcon = document.createElement('div');
+    scrollIcon.className = 'scroll-down-icon';
+    scrollIcon.innerHTML = `
+      <svg width="80" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M12 5 L12 19 M7 14 L12 19 L17 14"/>
+      </svg>
+      <div class="swipe-finger">👆</div>
+      <p>여기를 클릭해주세요</p>
+    `;
+    contentArea.appendChild(scrollIcon);
+
+    // 스크롤 아이콘 클릭 이벤트
+    scrollIcon.addEventListener('click', () => {
+      if (currentStep === 8) {
+        const config = STEPS_CONFIG[currentStep];
+
+        // 스크롤 아이콘 제거
+        scrollIcon.remove();
+
+        // 부드러운 전환을 위해 현재 위치에서 시작
+        const currentRect = svgContainer.getBoundingClientRect();
+        const currentTop = currentRect.top;
+
+        // align-bottom으로 변경
+        svgContainer.className = 'svg-container align-bottom';
+
+        // 새로운 위치 계산
+        const newRect = svgContainer.getBoundingClientRect();
+        const newTop = newRect.top;
+        const diff = currentTop - newTop;
+
+        // 차이만큼 transform으로 원래 위치에 두기
+        svgContainer.style.transform = `translateY(${diff}px)`;
+
+        // 다음 프레임에서 transform 제거 (부드러운 애니메이션)
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            svgContainer.style.removeProperty('transform');
+          });
+        });
+
+        // 키패드 입력 표시 생성
+        createKeypadInputDisplay('amount');
+
+        // 가이드 메시지 업데이트 (하단 정렬 후 메시지로 변경)
+        const guideMessageText = guideMessage.querySelector('.guide-message-text');
+        if (guideMessageText && config.instructionAfterScroll) {
+          guideMessageText.textContent = config.instructionAfterScroll;
+        }
+
+        // TTS 재생 (하단 정렬 후 음성으로 변경)
+        if (config.audioFileAfterScroll && window.ttsEnabled) {
+          // 이전 오디오 정지
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+          }
+
+          // 캐시 버스팅: 버전 파라미터 추가
+          const audioSrc = `${config.audioFileAfterScroll}?v=${CACHE_VERSION}`;
+
+          // 새로운 오디오 재생
+          currentAudio = new Audio(audioSrc);
+          currentAudio.volume = 1.0;
+          currentAudio.play().catch(error => {
+            console.log('오디오 자동재생 차단:', error);
+          });
+        }
+
+        // 키패드 클릭 활성화 (빨간 박스는 계속 숨김)
+        clickAreas.forEach(area => {
+          area.style.pointerEvents = 'auto';
+          // opacity는 0으로 유지 (보이지 않지만 클릭 가능)
+        });
+
+        // 스크롤 완료 후 좌표 재계산 (초기 vs 반응형 좌표 문제 해결)
+        setTimeout(() => {
+          updateClickAreaPositions();
+        }, 100);
+      }
+    });
+    return;
+  }
+
+  if (!config.clickAreas || config.clickAreas.length === 0) {
+    return;
+  }
+
+  // 첫 번째 클릭 영역의 위치를 기준으로 판단
+  const firstArea = config.clickAreas[0];
+  const focusTop = parseFloat(firstArea.top);
+
+  // 위치에 따라 스크롤 효과 적용
+  if (focusTop < 30) {
+    // 상단 초점 - 스크롤 없음
+    svgContainer.classList.add('focus-top');
+  } else if (focusTop < 60) {
+    // 중간 초점 - 약간 스크롤
+    svgContainer.classList.add('focus-middle');
+  } else {
+    // 하단 초점 - 많이 스크롤 (키패드, 다음 버튼 등)
+    svgContainer.classList.add('focus-bottom');
+  }
+}
+
+// ===== 강조 영역 생성 =====
+function createHighlightAreas(config) {
+  // 기존 강조 영역 제거
+  const existingHighlights = contentArea.querySelectorAll('.highlight-area');
+  existingHighlights.forEach(highlight => highlight.remove());
+
+  currentHighlightAreas = [];
+
+  if (!config.highlightAreas || config.highlightAreas.length === 0) {
+    return;
+  }
+
+  // 새 강조 영역 생성 (픽셀 기반으로 변경)
+  config.highlightAreas.forEach((area, index) => {
+    const highlightDiv = document.createElement('div');
+    highlightDiv.className = 'highlight-area';
+    highlightDiv.dataset.label = area.label || `강조${index + 1}`;
+
+    contentArea.appendChild(highlightDiv);
+    currentHighlightAreas.push({ element: highlightDiv, data: area });
+  });
+}
+
+// ===== 클릭 영역 위치 업데이트 (반응형 대응) =====
+function updateClickAreaPositions() {
+  if (currentClickAreas.length === 0 && currentHighlightAreas.length === 0) return;
+  if (editMode) return; // 에디터 모드에서는 업데이트 안 함
+
+  // SVG 이미지의 실제 위치와 크기 가져오기
+  const imgRect = stepImage.getBoundingClientRect();
+  const containerRect = contentArea.getBoundingClientRect();
+
+  // SVG가 아직 렌더링 안 됐거나 로드되지 않았으면 스킵
+  if (imgRect.width === 0 || imgRect.height === 0 || !stepImage.complete || stepImage.naturalWidth === 0) {
+    return;
+  }
+
+  // 디버그 정보 저장
+  window.lastCalcDebug = {
+    step: currentStep,
+    imgWidth: imgRect.width,
+    imgHeight: imgRect.height,
+    imgTop: imgRect.top,
+    containerTop: containerRect.top,
+    imgSrc: stepImage.src
+  };
+
+  // 클릭 영역 업데이트
+  currentClickAreas.forEach(({ element, data }) => {
+    // 퍼센트를 픽셀로 변환 (SVG 이미지 기준)
+    const left = (data.left / 100) * imgRect.width + (imgRect.left - containerRect.left);
+    const top = (data.top / 100) * imgRect.height + (imgRect.top - containerRect.top);
+    const width = (data.width / 100) * imgRect.width;
+    const height = (data.height / 100) * imgRect.height;
+
+    // 디버그 정보 추가
+    if (data.label === '이체하기') {
+      window.lastCalcDebug.step2 = {
+        topPercent: data.top,
+        topPixel: top,
+        calculation: `(${data.top} / 100) * ${imgRect.height} + (${imgRect.top} - ${containerRect.top})`
+      };
+    }
+
+    // 절대 위치로 설정 (px)
+    element.style.left = `${left}px`;
+    element.style.top = `${top}px`;
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+  });
+
+  // 강조 영역 업데이트
+  currentHighlightAreas.forEach(({ element, data }) => {
+    // 퍼센트를 픽셀로 변환 (SVG 이미지 기준)
+    const left = (data.left / 100) * imgRect.width + (imgRect.left - containerRect.left);
+    const top = (data.top / 100) * imgRect.height + (imgRect.top - containerRect.top);
+    const width = (data.width / 100) * imgRect.width;
+    const height = (data.height / 100) * imgRect.height;
+
+    // 절대 위치로 설정 (px)
+    element.style.left = `${left}px`;
+    element.style.top = `${top}px`;
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+  });
+
+  // 키패드 입력 표시 위치 업데이트 (반응형)
+  if (keypadDisplayElement) {
+    // 단계별 퍼센트 값 설정
+    let leftPercent = 35;
+    let topPercent = 22;
+
+    if (currentStep === 6) {
+      // 6단계
+      leftPercent = 35;
+      topPercent = 25;
+    } else if (currentStep === 8) {
+      // 8단계
+      leftPercent = 30;
+      topPercent = 30;
+    } else if (currentStep === 12) {
+      // 12단계만: left +5 (오른쪽), top +10 (아래로)
+      leftPercent = 40;
+      topPercent = 32;
+    }
+
+    // SVG 이미지 기준으로 픽셀 위치 계산
+    const left = (leftPercent / 100) * imgRect.width + (imgRect.left - containerRect.left);
+    const top = (topPercent / 100) * imgRect.height + (imgRect.top - containerRect.top);
+
+    // 위치 적용
+    keypadDisplayElement.style.left = `${left}px`;
+    keypadDisplayElement.style.top = `${top}px`;
+  }
+
+}
+
+// ===== 클릭 영역 생성 =====
+function createClickAreas(config) {
+  // 기존 클릭 영역, 키패드 입력 표시 제거
+  const existingAreas = contentArea.querySelectorAll('.clickable-area');
+  existingAreas.forEach(area => area.remove());
+  const existingKeypadDisplay = contentArea.querySelector('.keypad-input-display');
+  if (existingKeypadDisplay) existingKeypadDisplay.remove();
+
+  currentClickAreas = [];
+
+  if (!config.clickAreas || config.clickAreas.length === 0) {
+    return;
+  }
+
+  // 새 클릭 영역 생성
+  config.clickAreas.forEach((area, index) => {
+    const clickDiv = document.createElement('div');
+    clickDiv.className = 'clickable-area';
+    // 6, 8단계 키패드는 시각적으로 숨김 (동작만 함), 12단계는 표시
+    if (showHints && !debugMode && !((currentStep === 6 || currentStep === 8) && area.keyValue)) {
+      clickDiv.classList.add('show-hint');
+    }
+    // 키패드 버튼이면 클래스 추가
+    if (area.keyValue) {
+      clickDiv.classList.add('keypad-button');
+    }
+    // 12단계 키패드만 완전히 투명하게 숨김 (임시로 비활성화)
+    // if (currentStep === 12 && area.keyValue) {
+    //   clickDiv.classList.add('keypad-hidden');
+    // }
+    clickDiv.dataset.label = area.label;
+    clickDiv.dataset.keyValue = area.keyValue || '';
+
+    // 클릭 이벤트 (에디터 모드에서는 비활성화)
+    clickDiv.addEventListener('click', (e) => {
+      if (editMode) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+      if (!debugMode) {
+        handleClick(area);
+      }
+    }, true); // capture phase 사용
+
+    contentArea.appendChild(clickDiv);
+    currentClickAreas.push({ element: clickDiv, data: area });
+  });
+
+  // 키패드 입력 표시 생성 (키패드가 있는 단계에서만)
+  // 8단계는 하단 정렬 후에 생성
+  if (config.keypad && currentStep !== 8) {
+    createKeypadInputDisplay(config.keypad);
+  }
+
+  // 동적 좌표 계산 활성화 - SVG 이미지 기준
+  if (stepImage.complete) {
+    updateClickAreaPositions();
+  } else {
+    stepImage.addEventListener('load', () => {
+      updateClickAreaPositions();
+    }, { once: true });
+  }
+}
+
+// ===== TTS 재생 함수 (오디오 파일) =====
+function playTTS(stepNumber) {
+  // 이전 오디오 정지
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+
+  // 현재 단계의 오디오 파일 가져오기
+  const config = STEPS_CONFIG[stepNumber];
+  if (!config || !config.audioFile) {
+    return;
+  }
+
+  // 캐시 버스팅: 버전 파라미터 추가
+  const audioSrc = `${config.audioFile}?v=${CACHE_VERSION}`;
+
+  // 새 오디오 생성 및 재생
+  currentAudio = new Audio(audioSrc);
+  currentAudio.volume = 1.0;
+
+  // 재생 시도 (브라우저 자동재생 정책으로 차단될 수 있음)
+  currentAudio.play().catch(error => {
+    console.log('오디오 자동재생 차단:', error);
+    // 자동재생 차단 시 무시하고 계속 진행
+  });
+
+  // 에러 처리
+  currentAudio.onerror = () => {
+    console.log('오디오 로드 실패:', config.audioFile);
+  };
+}
+
+// ===== TTS 온오프 토글 =====
+function toggleTTS() {
+  window.ttsEnabled = !window.ttsEnabled;
+
+  // TTS 버튼 아이콘 업데이트
+  const ttsToggleIcon = document.getElementById('ttsToggleIcon');
+  if (window.ttsEnabled) {
+    ttsToggleIcon.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      </svg>`;
+  } else {
+    ttsToggleIcon.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+      </svg>`;
+  }
+
+  // 현재 오디오 정지
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+
+  // 토글 후 즉시 현재 단계 TTS 재생
+  if (window.ttsEnabled) {
+    playTTS(currentStep);
+  }
+}
+
+// ===== 키패드 입력 표시 생성 =====
+function createKeypadInputDisplay(keypadType) {
+  const display = document.createElement('div');
+  display.className = 'keypad-input-display';
+
+  const label = document.createElement('div');
+  label.className = 'keypad-input-label';
+  if (keypadType === 'account') {
+    label.textContent = '계좌번호';
+  } else if (keypadType === 'amount') {
+    label.textContent = '이체 금액';
+  } else if (keypadType === 'password') {
+    label.textContent = '비밀번호';
+  } else {
+    label.textContent = '입력';
+  }
+
+  const value = document.createElement('div');
+  value.className = 'keypad-input-value';
+  value.textContent = '-';
+
+  display.appendChild(label);
+  display.appendChild(value);
+  contentArea.appendChild(display);
+
+  // 전역 변수에 저장 (반응형 위치 계산용)
+  keypadDisplayElement = display;
+}
+
+// ===== 클릭 처리 =====
+function handleClick(area) {
+  // 키패드 입력 처리
+  if (area.keyValue !== undefined) {
+    handleKeypadInput(area.keyValue);
+    return;
+  }
+
+  // 메뉴로 이동
+  if (area.goToMenu) {
+    showToast('success');
+    setTimeout(() => {
+      goToMenu();
+    }, 300);
+    return;
+  }
+
+  // 일반 클릭
+  showToast('success');
+  setTimeout(() => {
+    // jumpToStep이 있으면 해당 단계로 이동
+    if (area.jumpToStep) {
+      goToStep(area.jumpToStep);
+    } else {
+      nextStep();
+    }
+  }, 300);
+}
+
+// ===== 키패드 입력 처리 =====
+function handleKeypadInput(value) {
+  const config = STEPS_CONFIG[currentStep];
+  if (!config || !config.keypad) return;
+
+  // 지우기 버튼 처리
+  if (value === 'delete') {
+    keypadInput = keypadInput.slice(0, -1);
+    updateKeypadInputDisplay();
+    return;
+  }
+
+  // 값 추가
+  if (value === '10000') {
+    // 1만원 버튼
+    keypadInput = '10000';
+  } else if (value === '50000') {
+    // 5만원 버튼
+    keypadInput = '50000';
+  } else {
+    // 숫자 입력 (0, 00, 1~9)
+    keypadInput += value;
+  }
+
+  // 입력 표시 업데이트
+  updateKeypadInputDisplay();
+
+  // 목표 값과 비교
+  if (config.targetValue && keypadInput === config.targetValue) {
+    showToast('success');
+    setTimeout(() => {
+      nextStep();
+    }, 600);
+  } else if (keypadInput.length >= 5 && keypadInput.length > config.targetValue.length) {
+    // 5자리 이상이고 초과 입력인 경우만 오류
+    // 입력값 초기화
+    keypadInput = '';
+    updateKeypadInputDisplay();
+
+    // 단계별 안내 메시지
+    let errorMessage = '다시 시도해주세요.';
+    if (currentStep === 6) {
+      errorMessage = '보내실 계좌번호를 다시 입력해주세요.';
+    } else if (currentStep === 8) {
+      errorMessage = '이체금액을 다시 입력해주세요.';
+    } else if (currentStep === 12) {
+      errorMessage = '비밀번호를 다시 입력해주세요.';
+    }
+
+    showToast('error', errorMessage);
+  }
+}
+
+// ===== 키패드 입력 표시 업데이트 =====
+function updateKeypadInputDisplay() {
+  const display = document.querySelector('.keypad-input-display');
+  if (!display) return;
+
+  const valueEl = display.querySelector('.keypad-input-value');
+  if (!valueEl) return;
+
+  const config = STEPS_CONFIG[currentStep];
+
+  // 12단계에서는 숫자 간 거리를 2배로
+  if (currentStep === 12) {
+    display.style.letterSpacing = '8px';
+  } else {
+    display.style.letterSpacing = '4px';
+  }
+
+  if (keypadInput.length === 0) {
+    valueEl.textContent = '-';
+  } else if (config.keypad === 'amount') {
+    // 금액: 천 단위 콤마
+    valueEl.textContent = formatAmount(keypadInput);
+  } else if (config.keypad === 'password') {
+    // 비밀번호: 숫자로 표시 (동그라미 아님)
+    valueEl.textContent = keypadInput;
+  } else {
+    // 계좌번호 등: 그대로 표시
+    valueEl.textContent = keypadInput;
+  }
+}
+
+// ===== 금액 포맷 =====
+function formatAmount(value) {
+  if (!value) return '0원';
+  const num = parseInt(value);
+  return num.toLocaleString() + '원';
+}
+
+// ===== 다음 단계 =====
+function nextStep() {
+  const config = STEPS_CONFIG[currentStep];
+
+  if (config && config.isLastStep) {
+    // 마지막 단계 - 완료 화면 표시
+    showCompletion();
+    return;
+  }
+
+  if (currentStep < totalSteps) {
+    loadStep(currentStep + 1);
+  }
+}
+
+// ===== 특정 단계로 이동 =====
+function goToStep(stepNumber) {
+  if (stepNumber >= 1 && stepNumber <= totalSteps) {
+    loadStep(stepNumber);
+  }
+}
+
+// ===== 토스트 메시지 표시 =====
+function showToast(type = 'success', customMessage = null) {
+  // 성공 메시지는 숨김, 에러 메시지만 표시
+  if (type === 'success') {
+    return;
+  }
+
+  // 타입에 따라 메시지 설정
+  if (type === 'success') {
+    toast.textContent = customMessage || '잘하셨어요.';
+    toast.classList.add('success');
+    toast.classList.remove('error');
+  } else {
+    toast.textContent = customMessage || '다시 시도해주세요.';
+    toast.classList.add('error');
+    toast.classList.remove('success');
+  }
+
+  toast.classList.add('show');
+
+  // 1.2초 후 숨김
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1200);
+}
+
+// ===== 완료 화면 표시 =====
+function showCompletion() {
+  completionOverlay.classList.add('show');
+}
+
+// ===== 에디터 모드 =====
+let editMode = false;
+let draggedElement = null;
+let dragStartX = 0;
+let dragStartY = 0;
+let elementStartLeft = 0;
+let elementStartTop = 0;
+let resizeMode = null;
+let hasMoved = false; // 실제로 드래그가 발생했는지 추적
+
+window.toggleEditMode = function() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-mode', editMode);
+
+  if (editMode) {
+    enableDragAndResize();
+  } else {
+    disableDragAndResize();
+
+    // 동적 계산 재개
+    setTimeout(() => {
+      updateClickAreaPositions();
+    }, 100);
+  }
+};
+
+function enableDragAndResize() {
+  currentClickAreas.forEach(({ element, data }) => {
+    // 리사이즈 핸들 추가
+    if (!element.querySelector('.resize-handle')) {
+      ['nw', 'ne', 'sw', 'se'].forEach(pos => {
+        const handle = document.createElement('div');
+        handle.className = `resize-handle ${pos}`;
+        handle.dataset.position = pos;
+        element.appendChild(handle);
+      });
+    }
+
+    // 툴팁 추가
+    if (!element.querySelector('.coord-tooltip')) {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'coord-tooltip';
+      element.appendChild(tooltip);
+      updateTooltip(element, data);
+    }
+  });
+}
+
+function disableDragAndResize() {
+  document.querySelectorAll('.resize-handle').forEach(h => h.remove());
+  document.querySelectorAll('.coord-tooltip').forEach(t => t.remove());
+}
+
+function updateTooltip(element, data) {
+  const tooltip = element.querySelector('.coord-tooltip');
+  if (tooltip) {
+    tooltip.textContent = `L:${data.left.toFixed(1)} T:${data.top.toFixed(1)} W:${data.width.toFixed(1)} H:${data.height.toFixed(1)}`;
+  }
+}
+
+// 마우스 이벤트 (capture phase로 먼저 잡기)
+document.addEventListener('mousedown', (e) => {
+  if (!editMode) return;
+
+  // 이미 드래그 중이면 무시
+  if (draggedElement) {
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+
+  hasMoved = false; // 리셋
+
+  // 리사이즈 핸들 먼저 확인
+  if (e.target.classList.contains('resize-handle')) {
+    const clickArea = e.target.parentElement;
+    if (!clickArea.classList.contains('clickable-area')) return;
+
+    draggedElement = clickArea;
+    draggedElement.classList.add('dragging');
+    resizeMode = e.target.dataset.position;
+
+    const rect = clickArea.getBoundingClientRect();
+    const containerRect = contentArea.getBoundingClientRect();
+
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    elementStartLeft = rect.left - containerRect.left;
+    elementStartTop = rect.top - containerRect.top;
+
+    console.log('✅ 리사이즈 시작:', resizeMode, 'draggedElement 설정됨');
+
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+
+  // 툴팁이나 다른 자식 요소는 ���시
+  if (e.target.classList.contains('coord-tooltip')) {
+    console.log('⚠️ 툴팁 클릭, 무시');
+    return;
+  }
+
+  // 클릭 영역 자체 드래그
+  const clickArea = e.target.closest('.clickable-area');
+  if (!clickArea) return;
+
+  // 먼저 이벤트 차단
+  e.preventDefault();
+  e.stopPropagation();
+
+  draggedElement = clickArea;
+  draggedElement.classList.add('dragging');
+  resizeMode = null;
+
+  const rect = clickArea.getBoundingClientRect();
+  const containerRect = contentArea.getBoundingClientRect();
+
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  elementStartLeft = rect.left - containerRect.left;
+  elementStartTop = rect.top - containerRect.top;
+
+  console.log('✅ 드래그 시작:', draggedElement.dataset.label,
+              'at', elementStartLeft, elementStartTop);
+}, true); // capture phase 사용
+
+document.addEventListener('mousemove', (e) => {
+  console.log('🖱️ mousemove 발생, editMode:', editMode, 'draggedElement:', !!draggedElement);
+
+  if (!editMode || !draggedElement) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  hasMoved = true; // 실제로 드래그 발생
+
+  const deltaX = e.clientX - dragStartX;
+  const deltaY = e.clientY - dragStartY;
+
+  const containerRect = contentArea.getBoundingClientRect();
+  const imgRect = stepImage.getBoundingClientRect();
+
+  // 현재 데이터 찾기
+  const areaData = currentClickAreas.find(a => a.element === draggedElement)?.data;
+  if (!areaData) {
+    console.error('❌ 영역 데이터를 찾을 수 없음');
+    return;
+  }
+
+  console.log('🔄 드래그 중:', deltaX, deltaY);
+
+  if (resizeMode) {
+    // 리사이즈
+    const currentRect = draggedElement.getBoundingClientRect();
+    let newWidth = currentRect.width;
+    let newHeight = currentRect.height;
+    let newLeft = currentRect.left - containerRect.left;
+    let newTop = currentRect.top - containerRect.top;
+
+    if (resizeMode.includes('e')) newWidth = currentRect.width + deltaX;
+    if (resizeMode.includes('w')) {
+      newWidth = currentRect.width - deltaX;
+      newLeft = elementStartLeft + deltaX;
+    }
+    if (resizeMode.includes('s')) newHeight = currentRect.height + deltaY;
+    if (resizeMode.includes('n')) {
+      newHeight = currentRect.height - deltaY;
+      newTop = elementStartTop + deltaY;
+    }
+
+    // px -> % 변환
+    areaData.width = Math.max(5, (newWidth / imgRect.width) * 100);
+    areaData.height = Math.max(5, (newHeight / imgRect.height) * 100);
+    areaData.left = Math.max(0, ((newLeft - (imgRect.left - containerRect.left)) / imgRect.width) * 100);
+    areaData.top = Math.max(0, ((newTop - (imgRect.top - containerRect.top)) / imgRect.height) * 100);
+
+    draggedElement.style.width = newWidth + 'px';
+    draggedElement.style.height = newHeight + 'px';
+    draggedElement.style.left = newLeft + 'px';
+    draggedElement.style.top = newTop + 'px';
+
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    elementStartLeft = newLeft;
+    elementStartTop = newTop;
+  } else {
+    // 드래그 (이동)
+    const newLeft = elementStartLeft + deltaX;
+    const newTop = elementStartTop + deltaY;
+
+    console.log('📍 계산된 위치:', newLeft, newTop);
+
+    // 스타일 직접 설정
+    draggedElement.style.left = newLeft + 'px';
+    draggedElement.style.top = newTop + 'px';
+    draggedElement.style.position = 'absolute';
+
+    // 적용 확인
+    console.log('✅ 적용된 스타일:', draggedElement.style.left, draggedElement.style.top);
+    console.log('🎯 실제 DOM 위치:', draggedElement.getBoundingClientRect().left, draggedElement.getBoundingClientRect().top);
+
+    // px -> % 변환 (SVG 이미지 기준)
+    const leftPercent = ((newLeft - (imgRect.left - containerRect.left)) / imgRect.width) * 100;
+    const topPercent = ((newTop - (imgRect.top - containerRect.top)) / imgRect.height) * 100;
+
+    areaData.left = Math.max(0, Math.min(100, leftPercent));
+    areaData.top = Math.max(0, Math.min(100, topPercent));
+
+    console.log('📊 % 좌표:', areaData.left.toFixed(1), areaData.top.toFixed(1));
+  }
+
+  updateTooltip(draggedElement, areaData);
+});
+
+let mouseupTimeout = null;
+document.addEventListener('mouseup', (e) => {
+  if (!editMode) return;
+
+  if (draggedElement) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 약간의 지연 (마우스 이벤트 처리 완료 대기)
+    if (mouseupTimeout) clearTimeout(mouseupTimeout);
+    mouseupTimeout = setTimeout(() => {
+      console.log('🛑 드래그 종료, hasMoved:', hasMoved);
+      if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+      }
+      draggedElement = null;
+      resizeMode = null;
+      hasMoved = false;
+    }, 50);
+  }
+}, true); // capture phase
+
+// click 이벤트 완전 차단 (에디터 모드)
+document.addEventListener('click', (e) => {
+  if (editMode && e.target.closest('.clickable-area')) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🚫 에디터 모드: 클릭 차단');
+    return false;
+  }
+}, true);
+
+// 테스트: 직접 위치 변경
+window.testMove = function(x, y) {
+  if (currentClickAreas.length === 0) {
+    console.error('클릭 영역 없음');
+    return;
+  }
+
+  const element = currentClickAreas[0].element;
+  console.log('이전 위치:', element.style.left, element.style.top);
+
+  element.style.left = x + 'px';
+  element.style.top = y + 'px';
+
+  console.log('새 위치:', element.style.left, element.style.top);
+  console.log('실제 DOM:', element.getBoundingClientRect());
+};
+
+// 테스트: 강제 드래그 시작
+window.testDrag = function() {
+  if (currentClickAreas.length === 0) {
+    console.error('클릭 영역 없음');
+    return;
+  }
+
+  editMode = true;
+  document.body.classList.add('edit-mode');
+
+  draggedElement = currentClickAreas[0].element;
+  hasMoved = false;
+  resizeMode = null;
+
+  // 현재 마우스 위치를 시작점으로
+  const rect = draggedElement.getBoundingClientRect();
+  const containerRect = contentArea.getBoundingClientRect();
+
+  dragStartX = rect.left + rect.width / 2;
+  dragStartY = rect.top + rect.height / 2;
+  elementStartLeft = rect.left - containerRect.left;
+  elementStartTop = rect.top - containerRect.top;
+
+  draggedElement.classList.add('dragging');
+  enableDragAndResize();
+
+  console.log('✅ 강제 드래그 시작');
+  console.log('시작 위치:', elementStartLeft, elementStartTop);
+  console.log('이제 마우스를 움직여서 드래그하세요');
+};
+
+// 좌표 가져오기
+window.getCoords = function(step = currentStep) {
+  const config = STEPS_CONFIG[step];
+  if (!config || !config.clickAreas) return;
+
+  console.log('%c📋 현재 좌표 (복사해서 사용):', 'color: #C8102E; font-weight: bold; font-size: 16px;');
+  console.log(`Step ${step}:`);
+
+  config.clickAreas.forEach((area, index) => {
+    console.log(`%c${area.label}:`, 'color: #27ae60; font-weight: bold;');
+    console.log(`{ label: '${area.label}', left: ${area.left.toFixed(2)}, top: ${area.top.toFixed(2)}, width: ${area.width.toFixed(2)}, height: ${area.height.toFixed(2)} }`);
+  });
+
+  return config.clickAreas;
+};
+
+// ===== 메뉴로 이동 =====
+function goToMenu() {
+  window.location.href = 'menu.html';
+}
+
+// ===== 페이지 로드 시 초기화 =====
+document.addEventListener('DOMContentLoaded', init);
+
+// ===== 콘솔 테스트 함수 (개발용) =====
+window.testCoords = function(step, top, left = null) {
+  if (!STEPS_CONFIG[step] || !STEPS_CONFIG[step].clickAreas || STEPS_CONFIG[step].clickAreas.length === 0) {
+    console.error(`Step ${step} has no clickAreas`);
+    return;
+  }
+
+  const area = STEPS_CONFIG[step].clickAreas[0];
+  if (top !== null) area.top = top;
+  if (left !== null) area.left = left;
+
+  console.log(`✅ Step ${step} updated: top=${area.top}, left=${area.left}`);
+
+  if (currentStep === step) {
+    loadStep(step);
+    console.log('🔄 Reloaded current step');
+  } else {
+    console.log(`💡 Tip: Go to step ${step} to see changes`);
+  }
+};
+
+// 현재 좌표 확인 함수
+window.showCoords = function(step = currentStep) {
+  const config = STEPS_CONFIG[step];
+  if (!config || !config.clickAreas || config.clickAreas.length === 0) {
+    console.error(`Step ${step} has no clickAreas`);
+    return;
+  }
+
+  console.log(`%c📍 Step ${step} 좌표 (%)`, 'color: #C8102E; font-weight: bold; font-size: 16px;');
+  config.clickAreas.forEach((area, index) => {
+    console.log(`%c${index + 1}. ${area.label}`, 'color: #27ae60; font-weight: bold;');
+    console.table({
+      left: area.left + '%',
+      top: area.top + '%',
+      width: area.width + '%',
+      height: area.height + '%'
+    });
+  });
+
+  console.log('%c수정하려면:', 'color: #666; font-style: italic;');
+  console.log(`testCoords(${step}, 새top값, 새left값)`);
+  return config.clickAreas;
+};
+
+// 디버그 정보 확인 함수
+window.checkCalc = function() {
+  console.log('%c🔍 좌표 계산 디버그:', 'color: #C8102E; font-weight: bold; font-size: 14px;');
+  console.table(window.lastCalcDebug);
+  if (window.lastCalcDebug?.step2) {
+    console.log('%c2단계 상세:', 'color: #27ae60; font-weight: bold;');
+    console.table(window.lastCalcDebug.step2);
+  }
+};
+
+// 사용법 출력
+console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #C8102E;');
+console.log('%c📋 좌표 편집 명령어', 'color: #C8102E; font-weight: bold; font-size: 16px;');
+console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #C8102E;');
+console.log('%c✏️ toggleEditMode()%c       시각적 편집 모드 ON/OFF (Ctrl+E)', 'color: #27ae60; font-weight: bold;', 'color: #666;');
+console.log('  - 클릭 영역 드래그해서 이동');
+console.log('  - 모서리 핸들 드래그해서 크기 조절');
+console.log('  - 실시간 % 좌표 표시\n');
+console.log('%c📋 getCoords(단계)%c         수정한 좌표 가져오기', 'color: #e67e22; font-weight: bold;', 'color: #666;');
+console.log('  예: getCoords()           // 현재 단계');
+console.log('  예: getCoords(2)          // 2단계\n');
+console.log('%c📍 showCoords(단계)%c       현재 좌표 확인', 'color: #3498db; font-weight: bold;', 'color: #666;');
+console.log('%c🔧 testCoords(단계, top, left)%c 코드로 수정', 'color: #9b59b6; font-weight: bold;', 'color: #666;');
+console.log('%c🔍 checkCalc()%c            계산 디버그', 'color: #95a5a6; font-weight: bold;', 'color: #666;');
+console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #C8102E;');
+
+// ===== 키보드 단축키 (데스크톱) =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' && !editMode) {
+    goToStep(currentStep - 1);
+  } else if (e.key === 'ArrowRight' && !editMode) {
+    goToStep(currentStep + 1);
+  } else if (e.key === 'Home' && !editMode) {
+    goToStep(1);
+  } else if (e.key === 'd' && e.ctrlKey) {
+    e.preventDefault();
+    toggleDebugMode();
+  } else if (e.key === 'e' && e.ctrlKey) {
+    e.preventDefault();
+    toggleEditMode();
+  } else if (e.key === 'Escape' && editMode) {
+    toggleEditMode();
+  }
+});
+</script>
+
+</body>
+</html>
